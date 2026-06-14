@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Наша Спільнота — Стаття</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="portal">
+
+    <!-- HEADER -->
+    <header class="header">
+      <div class="logo">
+        <span class="logo-icon">📍</span>
+        Наша спільнота
+      </div>
+      <div class="header-right">
+        <nav class="nav">
+          <a href="homepage.html" class="nav-link">← Всі новини</a>
+        </nav>
+        <div class="lang-switcher">
+          <button class="lang-btn active" id="btn-ua" onclick="switchLang('ua')">🇺🇦 UA</button>
+          <button class="lang-btn" id="btn-de" onclick="switchLang('de')">🇨🇭 DE</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- ARTICLE LAYOUT -->
+    <div class="article-layout">
+
+      <!-- MAIN ARTICLE -->
+      <article class="article-page">
+
+        <div class="breadcrumb">
+          <a href="homepage.html">Новини</a>
+          <span>›</span>
+          <span>Культура</span>
+        </div>
+
+        <div class="badges">
+          <span class="badge">Важливо</span>
+          <span class="badge badge-warn">Культура</span>
+        </div>
+
+        <h1 class="article-page-title">Спільнота відкриває культурний центр у Санкт-Галлені</h1>
+
+        <div class="author-row">
+          <div class="avatar">ОК</div>
+          <div class="author-info">
+            <div class="author-name">Олена Коваль</div>
+            <div class="author-role">Редактор</div>
+          </div>
+          <div class="article-page-meta">
+            <span>📅 3 червня 2026</span>
+            <span>🕐 5 хв читання</span>
+          </div>
+        </div>
+
+        <div class="article-cover">
+          <span class="placeholder-icon" style="font-size: 3rem;">🖼</span>
+          <span class="placeholder-text">Фото обкладинки</span>
+        </div>
+
+        <div class="article-text">
+          <p>Після кількох місяців підготовки та пошуку приміщення наша спільнота нарешті оголошує про відкриття культурного центру в самому серці Санкт-Галлена. Це місце стане простором для зустрічей, майстер-класів, концертів і просто теплого спілкування.</p>
+
+          <h3>Як все починалось</h3>
+
+          <p>Ідея виникла ще минулого року, коли ми зрозуміли що нам потрібне постійне місце — не тимчасова оренда залу раз на місяць, а справжній дім для спільноти. Після кількох зборів і голосування вирішили шукати приміщення в центрі міста.</p>
+
+          <blockquote class="pullquote">
+            Ми хотіли місце, куди можна прийти в будь-який час — випити кави, зустріти своїх, відчути себе вдома далеко від дому.
+          </blockquote>
+
+          <h3>Що буде в центрі</h3>
+
+          <p>Простір розрахований на різні формати: невеликі концерти та культурні вечори, мовні курси та навчальні групи, дитячі заходи у вихідні, зустрічі з представниками місцевих організацій.</p>
+
+          <h3>Як долучитись</h3>
+
+          <p>Якщо ти хочеш допомогти з організацією заходів, маєш ідеї або просто хочеш бути частиною команди — пиши нам у Telegram або залишай контакти через форму на сайті. Будемо раді кожному.</p>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="share-row">
+          <span class="share-label">Поділитись:</span>
+          <button class="share-btn" onclick="navigator.clipboard.writeText(window.location.href)">📋 Скопіювати посилання</button>
+          <a href="https://t.me/share/url?url=&text=" class="share-btn" target="_blank">✈️ Telegram</a>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- RELATED -->
+        <div>
+          <p class="section-label">Читайте також</p>
+          <div class="related-cards">
+
+            <a href="article.html" class="related-card">
+              <div class="related-thumb">🏛</div>
+              <div>
+                <p class="related-title">Зустріч з представниками кантонального офісу інтеграції</p>
+                <p class="related-date">28 травня 2026</p>
+              </div>
+            </a>
+
+            <a href="article.html" class="related-card">
+              <div class="related-thumb">🎵</div>
+              <div>
+                <p class="related-title">Музичний вечір у неділю — запрошуємо всіх охочих</p>
+                <p class="related-date">25 травня 2026</p>
+              </div>
+            </a>
+
+            <a href="article.html" class="related-card">
+              <div class="related-thumb">📚</div>
+              <div>
+                <p class="related-title">Мовні курси для дорослих: нова група у вересні</p>
+                <p class="related-date">20 травня 2026</p>
+              </div>
+            </a>
+
+          </div>
+        </div>
+
+      </article>
+
+      <!-- SIDEBAR -->
+      <aside class="article-sidebar">
+
+        <div class="sidebar-box">
+          <p class="section-label">Зміст</p>
+          <div class="toc">
+            <a href="#" class="toc-item active">Як все починалось</a>
+            <a href="#" class="toc-item">Що буде в центрі</a>
+            <a href="#" class="toc-item">Як долучитись</a>
+          </div>
+        </div>
+
+        <div class="subscribe-box-sidebar">
+          <p class="section-label" style="border: none; padding: 0; margin-bottom: 8px;">Розсилка новин</p>
+          <p class="sub-sidebar-desc">Нові статті — прямо на пошту. Без спаму.</p>
+          <input type="email" placeholder="твій@email.com" class="sub-sidebar-input" />
+          <button class="sub-sidebar-btn">Підписатись</button>
+        </div>
+
+      </aside>
+
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <p>© 2026 Наша спільнота · Санкт-Галлен, Швейцарія</p>
+      <div class="footer-links">
+        <a href="#">Контакти</a>
+        <a href="#">Telegram</a>
+        <a href="#">Конфіденційність</a>
+      </div>
+    </footer>
+
+  </div>
+
+  <script src="i18n.js"></script>
+</body>
+</html>

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Наша Спільнота — Головна</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="portal">
+
+    <!-- HEADER -->
+    <header class="header">
+      <div class="logo">
+        <span class="logo-icon">📍</span>
+        Наша спільнота
+      </div>
+      <div class="header-right">
+        <nav class="nav">
+          <a href="#" class="nav-link active">Новини</a>
+          <a href="#" class="nav-link">Події</a>
+          <a href="#" class="nav-link">Статті</a>
+          <a href="#" class="nav-link">Про нас</a>
+        </nav>
+        <div class="lang-switcher">
+          <button class="lang-btn active" id="btn-ua" onclick="switchLang('ua')">🇺🇦 UA</button>
+          <button class="lang-btn" id="btn-de" onclick="switchLang('de')">🇨🇭 DE</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- HERO -->
+    <section class="hero-section">
+      <p class="section-label" id="hero-label">Головна новина місяця</p>
+      <div class="hero">
+        <div class="hero-img">
+          <div class="hero-img-placeholder">
+            <span class="placeholder-icon">🖼</span>
+            <span class="placeholder-text">Фото обкладинки</span>
+          </div>
+        </div>
+        <div class="hero-content">
+          <span class="badge" id="hero-badge">Важливо</span>
+          <h2 class="hero-title" id="hero-title">Спільнота відкриває культурний центр у Санкт-Галлені</h2>
+          <p class="hero-excerpt" id="hero-excerpt">Після кількох місяців підготовки ми раді оголосити відкриття нового простору для зустрічей, майстер-класів і концертів.</p>
+          <div class="hero-meta">
+            <span>📅 <span id="hero-date">3 червня 2026</span></span>
+            <span>✍️ <span id="hero-author">Редакція</span></span>
+          </div>
+          <a href="article.html" class="read-btn" id="hero-read">Читати далі →</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- MAIN GRID -->
+    <div class="main">
+
+      <!-- ARTICLES -->
+      <section>
+        <p class="section-label" id="news-label">Останні новини</p>
+        <div class="articles">
+
+          <a href="article.html" class="article-card">
+            <div class="article-thumb">🏛</div>
+            <div class="article-body">
+              <p class="article-title" id="a1-title">Зустріч з представниками кантонального офісу інтеграції</p>
+              <p class="article-meta">
+                <span class="badge badge-sm" id="a1-badge">Офіційне</span>
+                28 травня · 3 хв читання
+              </p>
+            </div>
+          </a>
+
+          <a href="article.html" class="article-card">
+            <div class="article-thumb">🎵</div>
+            <div class="article-body">
+              <p class="article-title" id="a2-title">Музичний вечір у неділю — запрошуємо всіх</p>
+              <p class="article-meta">
+                <span class="badge badge-sm badge-warn" id="a2-badge">Подія</span>
+                25 травня · 2 хв читання
+              </p>
+            </div>
+          </a>
+
+          <a href="article.html" class="article-card">
+            <div class="article-thumb">📚</div>
+            <div class="article-body">
+              <p class="article-title" id="a3-title">Мовні курси для дорослих: нова група у вересні</p>
+              <p class="article-meta">
+                <span class="badge badge-sm" id="a3-badge">Навчання</span>
+                20 травня · 4 хв читання
+              </p>
+            </div>
+          </a>
+
+          <a href="article.html" class="article-card">
+            <div class="article-thumb">❤️</div>
+            <div class="article-body">
+              <p class="article-title" id="a4-title">Волонтерська акція: допомагаємо збирати одяг для переселенців</p>
+              <p class="article-meta">
+                <span class="badge badge-sm badge-warn" id="a4-badge">Волонтерство</span>
+                15 травня · 2 хв читання
+              </p>
+            </div>
+          </a>
+
+        </div>
+      </section>
+
+      <!-- SIDEBAR -->
+      <aside>
+        <div class="sidebar">
+
+          <div class="sidebar-box">
+            <p class="section-label" id="events-label">Найближчі події</p>
+
+            <div class="event-item">
+              <div class="event-date">
+                <div class="event-day">14</div>
+                <div class="event-mon" id="ev1-mon">чер</div>
+              </div>
+              <div>
+                <p class="event-title" id="ev1-title">Зустріч спільноти в кафе</p>
+                <p class="event-loc">📍 Altstadt, СГ</p>
+              </div>
+            </div>
+
+            <div class="event-item">
+              <div class="event-date">
+                <div class="event-day">21</div>
+                <div class="event-mon" id="ev2-mon">чер</div>
+              </div>
+              <div>
+                <p class="event-title" id="ev2-title">Майстер-клас — вишиванка</p>
+                <p class="event-loc">📍 Культурний центр</p>
+              </div>
+            </div>
+
+            <div class="event-item">
+              <div class="event-date">
+                <div class="event-day">5</div>
+                <div class="event-mon" id="ev3-mon">лип</div>
+              </div>
+              <div>
+                <p class="event-title" id="ev3-title">Спільний перегляд фільму</p>
+                <p class="event-loc">📍 Онлайн</p>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </aside>
+
+    </div>
+
+    <!-- SUBSCRIBE BANNER -->
+    <div class="subscribe-banner">
+      <div class="sub-icon">✉️</div>
+      <div class="sub-text">
+        <h3 id="sub-title">Отримуй новини на пошту</h3>
+        <p id="sub-desc">Раз на тиждень — найважливіше з життя спільноти. Без спаму, лише корисне.</p>
+      </div>
+      <div class="sub-form">
+        <input type="email" id="sub-email" placeholder="твій@email.com" />
+        <button id="sub-btn" onclick="handleSubscribe()">Підписатись</button>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <p id="footer-text">© 2026 Наша спільнота · Санкт-Галлен, Швейцарія</p>
+      <div class="footer-links">
+        <a href="#">Контакти</a>
+        <a href="#">Telegram</a>
+        <a href="#">Конфіденційність</a>
+      </div>
+    </footer>
+
+  </div>
+
+  <script src="i18n.js"></script>
+  <script>
+    function handleSubscribe() {
+      const email = document.getElementById('sub-email').value;
+      if (!email) return;
+      alert('Дякуємо! ' + email + ' додано до розсилки.');
+      document.getElementById('sub-email').value = '';
+    }
+  </script>
+</body>
+</html>
