@@ -1,12 +1,23 @@
+import { useTranslations } from 'next-intl';
+
 export default function SubscribeSidebar() {
-  return (
-    <div className="subscribe-box-sidebar">
-      <p className="section-label" style={{ border: 'none', padding: 0, marginBottom: '8px' }}>
-        Розсилка новин
-      </p>
-      <p className="sub-sidebar-desc">Нові статті — прямо на пошту. Без спаму.</p>
-      <input type="email" placeholder="твій@email.com" className="sub-sidebar-input" />
-      <button className="sub-sidebar-btn">Підписатись</button>
-    </div>
-  );
+    const t = useTranslations('subscribeSideBar');
+
+    return (
+        <div className="subscribe-box-sidebar">
+            <p
+                className="section-label"
+                style={{ border: 'none', padding: 0, marginBottom: '8px' }}
+            >
+                {t('title')}
+            </p>
+            <p className="sub-sidebar-desc">{t('description')}</p>
+            <input
+                type="email"
+                placeholder={t('placeholder')}
+                className="sub-sidebar-input"
+            />
+            <button className="sub-sidebar-btn">{t('button')}</button>
+        </div>
+    );
 }

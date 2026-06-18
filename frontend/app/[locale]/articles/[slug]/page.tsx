@@ -66,21 +66,21 @@ export default function ArticlePage() {
         title: 'Зустріч з представниками кантонального офісу інтеграції',
         date: '28 травня 2026',
         icon: '🏛',
-        href: '/articles/kantonalnyi-ofis',
+        href: '/uk/articles/kantonalnyi-ofis',
       },
       {
         id: '2',
         title: 'Музичний вечір у неділю — запрошуємо всіх охочих',
         date: '25 травня 2026',
         icon: '🎵',
-        href: '/articles/muzychnyi-vechir',
+        href: '/uk/articles/muzychnyi-vechir',
       },
       {
         id: '3',
         title: 'Мовні курси для дорослих: нова група у вересні',
         date: '20 травня 2026',
         icon: '📚',
-        href: '/articles/movni-kursy',
+        href: '/uk/articles/movni-kursy',
       },
     ],
   };
@@ -93,7 +93,7 @@ export default function ArticlePage() {
         <article className="article-page">
           <Breadcrumb
             items={[
-              { label: 'Новини', href: '/' },
+              { label: 'Новини', href: '/uk' },
               { label: article.categories[1] },
             ]}
           />

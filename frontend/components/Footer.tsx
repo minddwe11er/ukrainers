@@ -1,12 +1,16 @@
+import { useTranslations } from 'next-intl';
+
 export default function Footer() {
-  return (
-    <footer className="footer">
-      <p>© 2026 Наша спільнота · Санкт-Галлен, Швейцарія</p>
-      <div className="footer-links">
-        <a href="#">Контакти</a>
-        <a href="#">Telegram</a>
-        <a href="#">Конфіденційність</a>
-      </div>
-    </footer>
-  );
+    const t = useTranslations('footer');
+
+    return (
+        <footer className="footer">
+            <p>{t('copyright')}</p>
+            <div className="footer-links">
+                <a href="#">{t('links.contacts')}</a>
+                <a href="#">{t('links.telegram')}</a>
+                <a href="#">{t('links.privacy')}</a>
+            </div>
+        </footer>
+    );
 }

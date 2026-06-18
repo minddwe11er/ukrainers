@@ -552,8 +552,6 @@ export interface ApiCategoryCategory extends Struct.CollectionTypeSchema {
   };
   options: {
     draftAndPublish: false;
-    increments: true;
-    timestamps: true;
   };
   pluginOptions: {
     i18n: {
@@ -572,6 +570,12 @@ export interface ApiCategoryCategory extends Struct.CollectionTypeSchema {
     >;
     name: Schema.Attribute.String &
       Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    name_de: Schema.Attribute.String &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
           localized: true;

@@ -1,10 +1,14 @@
+import { useTranslations } from 'next-intl';
+
 export default function Sidebar() {
+  const t = useTranslations('events');
+
   return (
     <aside>
       <div className="sidebar">
 
         <div className="sidebar-box">
-          <p className="section-label">Найближчі події</p>
+          <p className="section-label">{t('label')}</p>
 
           <div className="event-item">
             <div className="event-date">

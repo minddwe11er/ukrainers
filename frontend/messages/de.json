@@ -1,0 +1,53 @@
+{
+    "header": {
+        "logo": "Unsere Gemeinschaft",
+        "nav": {
+            "news": "Nachrichten",
+            "events": "Veranstaltungen",
+            "articles": "Artikel",
+            "about": "Über uns"
+        }
+    },
+    "hero": {
+        "label": "Nachricht des Monats",
+        "badge": "Wichtig"
+    },
+    "articles": {
+        "label": "Aktuelle Nachrichten"
+    },
+    "events": {
+        "label": "Anstehende Veranstaltungen"
+    },
+    "subscribe": {
+        "title": "Nachrichten direkt in Ihren Posteingang",
+        "description": "Wöchentlich die wichtigsten Neuigkeiten aus unserer Gemeinschaft. Kein Spam, nur nützliche Inhalte.",
+        "button": "Abonnieren",
+        "placeholder": "ihre@email.ch"
+    },
+    "subscribeSideBar": {
+        "title": "Newsletter abonnieren",
+        "description": "Neue Artikel und Veranstaltungen direkt in Ihren Posteingang. Kein Spam, nur nützliche Inhalte.",
+        "button": "Abonnieren",
+        "placeholder": "ihre@email.ch"
+    },
+    "footer": {
+        "copyright": "© 2026 Unsere Gemeinschaft · St. Gallen, Schweiz",
+        "links": {
+            "contacts": "Kontakte",
+            "telegram": "Telegram",
+            "privacy": "Datenschutz"
+        }
+    },
+    "article": {
+        "readTime": "Min Lesezeit",
+        "share": "Teilen:",
+        "copyLink": "📋 Link kopieren",
+        "telegram": "✈️ Telegram",
+        "toc": "Inhaltsverzeichnis",
+        "sidebar": {
+            "newsletter": "Newsletter",
+            "description": "Neue Artikel direkt in Ihren Posteingang. Kein Spam."
+        },
+        "related": "Lesen Sie auch"
+    }
+}

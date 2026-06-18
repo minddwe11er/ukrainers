@@ -7,8 +7,6 @@
     "displayName": "Категорія"
   },
   "options": {
-    "increments": true,
-    "timestamps": true,
     "draftAndPublish": false
   },
   "pluginOptions": {
@@ -19,7 +17,15 @@
   "attributes": {
     "name": {
       "type": "string",
-      "required": true,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      },
+      "required": true
+    },
+    "name_de": {
+      "type": "string",
       "pluginOptions": {
         "i18n": {
           "localized": true
@@ -28,13 +34,13 @@
     },
     "slug": {
       "type": "string",
-      "required": true,
-      "unique": true,
       "pluginOptions": {
         "i18n": {
           "localized": false
         }
-      }
+      },
+      "required": true,
+      "unique": true
     },
     "articles": {
       "type": "relation",
