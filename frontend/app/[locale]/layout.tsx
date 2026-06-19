@@ -4,6 +4,7 @@ import { getMessages } from 'next-intl/server';
 import '../globals.css';
 import { routing } from '../../i18n/routing';
 import { notFound } from 'next/navigation';
+import ScrollToTop from '@/components/ScrollToTop';
 
 export const metadata: Metadata = {
     title: 'Наша спільнота — новини й світ',
@@ -31,10 +32,16 @@ export default async function LocaleLayout({
     const messages = await getMessages();
 
     return (
-        <html lang={locale}>
+        <html lang={locale} suppressHydrationWarning>
+            <head>
+                <script dangerouslySetInnerHTML={{ __html: `
+                    (function(){try{var t=localStorage.getItem('theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark')}catch(e){}})();
+                ` }} />
+            </head>
             <body>
                 <NextIntlClientProvider messages={messages}>
                     {children}
+                    <ScrollToTop />
                 </NextIntlClientProvider>
             </body>
         </html>

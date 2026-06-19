@@ -1,6 +1,7 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
+import { getCategoryClass } from '@/lib/category-style';
 
 interface ArticleHeaderProps {
   title: string;
@@ -28,7 +29,7 @@ export default function ArticleHeader({
     <>
       <div className="badges">
         {categories.map((cat, i) => (
-          <span key={i} className={`badge ${i > 0 ? 'badge-warn' : ''}`}>
+          <span key={i} className={`badge ${getCategoryClass(cat)}`}>
             {cat}
           </span>
         ))}

@@ -25,6 +25,22 @@
       },
       "required": true
     },
+    "descr": {
+      "type": "text",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "descr_de": {
+      "type": "text",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
     "body": {
       "type": "richtext",
       "pluginOptions": {
@@ -78,6 +94,14 @@
     },
     "title_de": {
       "type": "string",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "sensitive": {
+      "type": "boolean",
       "pluginOptions": {
         "i18n": {
           "localized": true

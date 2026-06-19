@@ -1,6 +1,6 @@
 {
     "header": {
-        "logo": "Unsere Gemeinschaft",
+        "logo": "Ukraїners",
         "nav": {
             "news": "Nachrichten",
             "events": "Veranstaltungen",
@@ -10,7 +10,8 @@
     },
     "hero": {
         "label": "Nachricht des Monats",
-        "badge": "Wichtig"
+        "badge": "Wichtig",
+        "readMore": "Weiterlesen →"
     },
     "articles": {
         "label": "Aktuelle Nachrichten"
@@ -37,6 +38,15 @@
             "telegram": "Telegram",
             "privacy": "Datenschutz"
         }
+    },
+    "about": {
+        "title": "Über uns",
+        "subtitle": "Ukrainische Gemeinschaft in St. Gallen",
+        "mission": "Unsere Mission",
+        "team": "Unser Team",
+        "contact": "Kontaktieren Sie uns",
+        "telegram": "Telegram schreiben",
+        "email": "E-Mail senden"
     },
     "article": {
         "readTime": "Min Lesezeit",

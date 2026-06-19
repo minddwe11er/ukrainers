@@ -1,53 +1,61 @@
-export default function ArticleList() {
+'use client';
+
+import { useTranslations } from 'next-intl';
+import { getCategoryClass } from '@/lib/category-style';
+
+interface ArticleItem {
+  slug: string;
+  title: string;
+  description: string | null;
+  category: string | null;
+  date: string;
+  readingTime: number;
+  thumbnailUrl: string | null;
+  locale: string;
+}
+
+interface ArticleListProps {
+  articles: ArticleItem[];
+}
+
+export default function ArticleList({ articles }: ArticleListProps) {
+  const t = useTranslations();
+
   return (
     <section>
-      <p className="section-label">Останні новини</p>
+      <p className="section-label">{t('articles.label')}</p>
       <div className="articles">
-
-        <a href="#" className="article-card">
-          <div className="article-thumb">🏛</div>
-          <div className="article-body">
-            <p className="article-title">Зустріч з представниками кантонального офісу інтеграції</p>
-            <p className="article-meta">
-              <span className="badge badge-sm">Офіційне</span>
-              28 травня · 3 хв читання
-            </p>
-          </div>
-        </a>
-
-        <a href="#" className="article-card">
-          <div className="article-thumb">🎵</div>
-          <div className="article-body">
-            <p className="article-title">Музичний вечір у неділю — запрошуємо всіх</p>
-            <p className="article-meta">
-              <span className="badge badge-sm badge-warn">Подія</span>
-              25 травня · 2 хв читання
-            </p>
-          </div>
-        </a>
-
-        <a href="#" className="article-card">
-          <div className="article-thumb">📚</div>
-          <div className="article-body">
-            <p className="article-title">Мовні курси для дорослих: нова група у вересні</p>
-            <p className="article-meta">
-              <span className="badge badge-sm">Навчання</span>
-              20 травня · 4 хв читання
-            </p>
-          </div>
-        </a>
-
-        <a href="#" className="article-card">
-          <div className="article-thumb">❤️</div>
-          <div className="article-body">
-            <p className="article-title">Волонтерська акція: допомагаємо збирати одяг для переселенців</p>
-            <p className="article-meta">
-              <span className="badge badge-sm badge-warn">Волонтерство</span>
-              15 травня · 2 хв читання
-            </p>
-          </div>
-        </a>
-
+        {articles.map((article) => (
+          <a
+            key={article.slug}
+            href={`/${article.locale}/articles/${article.slug}`}
+            className="article-card"
+          >
+            <div className="article-thumb">
+              {article.thumbnailUrl ? (
+                <img
+                  src={article.thumbnailUrl}
+                  alt={article.title}
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 'inherit' }}
+                />
+              ) : (
+                '📰'
+              )}
+            </div>
+            <div className="article-body">
+              <p className="article-title">{article.title}</p>
+              {article.description && (
+                <p className="article-description">{article.description}</p>
+              )}
+              <p className="article-meta">
+                {article.category && (
+                  <span className={`badge badge-sm ${getCategoryClass(article.category)}`}>{article.category}</span>
+                )}
+                {article.date} · {article.readingTime} {t('article.readTime')}
+              </p>
+            </div>
+          </a>
+        ))}
       </div>
     </section>
   );

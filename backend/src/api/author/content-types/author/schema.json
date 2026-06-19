@@ -7,10 +7,9 @@
     "displayName": "Автор"
   },
   "options": {
-    "increments": true,
-    "timestamps": true,
     "draftAndPublish": false
   },
+  "pluginOptions": {},
   "attributes": {
     "name": {
       "type": "string",
@@ -20,17 +19,29 @@
       "type": "string"
     },
     "avatar": {
+      "type": "media",
+      "multiple": false,
       "allowedTypes": [
         "images"
-      ],
-      "type": "media",
-      "multiple": false
+      ]
     },
     "articles": {
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::article.article",
       "mappedBy": "author"
+    },
+    "name_de": {
+      "type": "string"
+    },
+    "role_de": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string"
+    },
+    "sortNumber": {
+      "type": "string"
     }
   }
 }

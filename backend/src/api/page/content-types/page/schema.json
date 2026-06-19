@@ -7,8 +7,6 @@
     "displayName": "Сторінка"
   },
   "options": {
-    "increments": true,
-    "timestamps": true,
     "draftAndPublish": true
   },
   "pluginOptions": {
@@ -19,26 +17,33 @@
   "attributes": {
     "title": {
       "type": "string",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      },
+      "required": true
+    },
+    "slug": {
+      "type": "string",
+      "pluginOptions": {
+        "i18n": {
+          "localized": false
+        }
+      },
       "required": true,
+      "unique": true
+    },
+    "body": {
+      "type": "richtext",
       "pluginOptions": {
         "i18n": {
           "localized": true
         }
       }
     },
-    "slug": {
-      "type": "string",
-      "required": true,
-      "unique": true,
-      "pluginOptions": {
-        "i18n": {
-          "localized": false
-        }
-      }
-    },
-    "content": {
-      "type": "dynamiczone",
-      "components": [],
+    "body_de": {
+      "type": "richtext",
       "pluginOptions": {
         "i18n": {
           "localized": true

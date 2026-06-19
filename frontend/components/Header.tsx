@@ -2,6 +2,7 @@
 
 import { useTranslations, useLocale } from 'next-intl';
 import LanguageSwitcher from './LanguageSwitcher';
+import ThemeSwitcher from './ThemeSwitcher';
 
 export default function Header() {
     const t = useTranslations('header');
@@ -9,10 +10,10 @@ export default function Header() {
 
     return (
         <header className="header">
-            <div className="logo">
+            <a href={`/${locale}`} className="logo">
                 <span className="logo-icon">📍</span>
                 {t('logo')}
-            </div>
+            </a>
             <div className="header-right">
                 <nav className="nav">
                     <a href={`/${locale}`} className="nav-link active">
@@ -24,10 +25,11 @@ export default function Header() {
                     <a href="#" className="nav-link">
                         {t('nav.articles')}
                     </a>
-                    <a href="#" className="nav-link">
+                    <a href={`/${locale}/about`} className="nav-link">
                         {t('nav.about')}
                     </a>
                 </nav>
+                <ThemeSwitcher />
                 <LanguageSwitcher />
             </div>
         </header>

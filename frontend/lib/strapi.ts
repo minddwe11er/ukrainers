@@ -29,7 +29,11 @@ export interface StrapiAuthor {
   id: number;
   documentId: string;
   name: string;
+  name_de: string | null;
   role: string | null;
+  role_de: string | null;
+  email: string | null;
+  sortNumber: string | null;
   avatar: StrapiImage | null;
 }
 
@@ -46,6 +50,8 @@ export interface StrapiArticle {
   documentId: string;
   title: string;
   title_de: string | null;
+  descr: string | null;
+  descr_de: string | null;
   body: string;
   body_de: string | null;
   slug: string;
@@ -102,6 +108,34 @@ export async function getArticles(
     'sort': 'publishedAt:desc',
     'pagination[pageSize]': String(pageSize),
     'status': 'published',
+    'locale': 'uk',
+  });
+
+  return data ?? [];
+}
+
+export interface StrapiPage {
+  id: number;
+  documentId: string;
+  title: string;
+  slug: string;
+  body: string | null;
+  body_de: string | null;
+}
+
+export async function getPageBySlug(slug: string): Promise<StrapiPage | null> {
+  const { data } = await fetchStrapi<StrapiPage[]>('/pages', {
+    'filters[slug][$eq]': slug,
+    'locale': 'uk',
+    'status': 'published',
+  });
+
+  return data?.[0] ?? null;
+}
+
+export async function getAuthors(): Promise<StrapiAuthor[]> {
+  const { data } = await fetchStrapi<StrapiAuthor[]>('/authors', {
+    'populate': 'avatar',
     'locale': 'uk',
   });
 

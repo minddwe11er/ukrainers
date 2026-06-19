@@ -1,23 +1,59 @@
-export default function Hero() {
+'use client';
+
+import { useTranslations } from 'next-intl';
+import { getCategoryClass } from '@/lib/category-style';
+
+interface HeroProps {
+  article: {
+    slug: string;
+    title: string;
+    description: string | null;
+    category: string | null;
+    date: string;
+    author: string;
+    coverUrl: string | null;
+    locale: string;
+  } | null;
+}
+
+export default function Hero({ article }: HeroProps) {
+  const t = useTranslations('hero');
+
+  if (!article) return null;
+
   return (
     <section className="hero-section">
-      <p className="section-label">Головна новина місяця</p>
+      <p className="section-label">{t('label')}</p>
       <div className="hero">
         <div className="hero-img">
-          <div className="hero-img-placeholder">
-            <span className="placeholder-icon">🖼</span>
-            <span className="placeholder-text">Фото обкладинки</span>
-          </div>
+          {article.coverUrl ? (
+            <img
+              src={article.coverUrl}
+              alt={article.title}
+              style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 'inherit' }}
+            />
+          ) : (
+            <div className="hero-img-placeholder">
+              <span className="placeholder-icon">🖼</span>
+              <span className="placeholder-text">Фото обкладинки</span>
+            </div>
+          )}
         </div>
         <div className="hero-content">
-          <span className="badge">Важливо</span>
-          <h2 className="hero-title">Спільнота відкриває культурний центр у Санкт-Галлені</h2>
-          <p className="hero-excerpt">Після кількох місяців підготовки ми раді оголосити відкриття нового простору для зустрічей, майстер-класів і концертів.</p>
+          {article.category && (
+            <span className={`badge ${getCategoryClass(article.category)}`}>{article.category}</span>
+          )}
+          <h2 className="hero-title">{article.title}</h2>
+          {article.description && (
+            <p className="hero-excerpt">{article.description}</p>
+          )}
           <div className="hero-meta">
-            <span>📅 <span>3 червня 2026</span></span>
-            <span>✍️ <span>Редакція</span></span>
+            <span>📅 <span>{article.date}</span></span>
+            <span>✍️ <span>{article.author}</span></span>
           </div>
-          <a href="#" className="read-btn">Читати далі →</a>
+          <a href={`/${article.locale}/articles/${article.slug}`} className="read-btn">
+            {t('readMore')}
+          </a>
         </div>
       </div>
     </section>
