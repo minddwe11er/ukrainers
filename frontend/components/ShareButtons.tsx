@@ -1,6 +1,9 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
+
 export default function ShareButtons() {
+  const t = useTranslations('article');
   const handleCopyLink = () => {
     navigator.clipboard.writeText(window.location.href);
   };
@@ -12,12 +15,12 @@ export default function ShareButtons() {
   return (
     <>
       <div className="share-row">
-        <span className="share-label">Поділитись:</span>
+        <span className="share-label">{t('share')}</span>
         <button className="share-btn" onClick={handleCopyLink}>
-          📋 Скопіювати посилання
+          {t('copyLink')}
         </button>
         <a href={telegramShareUrl} className="share-btn" target="_blank" rel="noopener noreferrer">
-          ✈️ Telegram
+          {t('telegram')}
         </a>
       </div>
     </>

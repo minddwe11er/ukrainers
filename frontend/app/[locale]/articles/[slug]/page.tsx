@@ -1,89 +1,109 @@
+import { notFound } from 'next/navigation';
+import { redirect } from 'next/navigation';
 import Breadcrumb from '@/components/Breadcrumb';
 import Header from '@/components/Header';
 import ArticleHeader from '@/components/ArticleHeader';
-import ArticleContent from '@/components/ArticleContent';
+import ArticleBody from '@/components/ArticleBody';
 import ShareButtons from '@/components/ShareButtons';
 import RelatedArticles from '@/components/RelatedArticles';
 import TableOfContents from '@/components/TableOfContents';
 import SubscribeSidebar from '@/components/SubscribeSidebar';
 import Footer from '@/components/Footer';
+import { getTranslations } from 'next-intl/server';
+import {
+  getArticleBySlug,
+  getArticles,
+  getStrapiImageUrl,
+} from '@/lib/strapi';
 
-export default function ArticlePage() {
-  // Поки що hardcoded дані, потім звідси буде API запит до Strapi
-  const article = {
-    title: 'Спільнота відкриває культурний центр у Санкт-Галлені',
-    categories: ['Важливо', 'Культура'],
-    author: {
-      name: 'Олена Коваль',
-      role: 'Редактор',
-      avatar: 'ОК',
-    },
-    publishedAt: '3 червня 2026',
-    readingTime: 5,
-    coverIcon: '🖼',
-    content: [
-      {
-        type: 'paragraph' as const,
-        text: 'Після кількох місяців підготовки та пошуку приміщення наша спільнота нарешті оголошує про відкриття культурного центру в самому серці Санкт-Галлена. Це місце стане простором для зустрічей, майстер-класів, концертів і просто теплого спілкування.',
-      },
-      {
-        type: 'heading' as const,
-        text: 'Як все починалось',
-      },
-      {
-        type: 'paragraph' as const,
-        text: 'Ідея виникла ще минулого року, коли ми зрозуміли що нам потрібне постійне місце — не тимчасова оренда залу раз на місяць, а справжній дім для спільноти. Після кількох зборів і голосування вирішили шукати приміщення в центрі міста.',
-      },
-      {
-        type: 'quote' as const,
-        text: 'Ми хотіли місце, куди можна прийти в будь-який час — випити кави, зустріти своїх, відчути себе вдома далеко від дому.',
-      },
-      {
-        type: 'heading' as const,
-        text: 'Що буде в центрі',
-      },
-      {
-        type: 'paragraph' as const,
-        text: 'Простір розрахований на різні формати: невеликі концерти та культурні вечори, мовні курси та навчальні групи, дитячі заходи у вихідні, зустрічі з представниками місцевих організацій.',
-      },
-      {
-        type: 'heading' as const,
-        text: 'Як долучитись',
-      },
-      {
-        type: 'paragraph' as const,
-        text: 'Якщо ти хочеш допомогти з організацією заходів, маєш ідеї або просто хочеш бути частиною команди — пиши нам у Telegram або залишай контакти через форму на сайті. Будемо раді кожному.',
-      },
-    ],
-    tableOfContents: [
-      { id: 'heading-1', label: 'Як все починалось' },
-      { id: 'heading-2', label: 'Що буде в центрі' },
-      { id: 'heading-3', label: 'Як долучитись' },
-    ],
-    relatedArticles: [
-      {
-        id: '1',
-        title: 'Зустріч з представниками кантонального офісу інтеграції',
-        date: '28 травня 2026',
-        icon: '🏛',
-        href: '/uk/articles/kantonalnyi-ofis',
-      },
-      {
-        id: '2',
-        title: 'Музичний вечір у неділю — запрошуємо всіх охочих',
-        date: '25 травня 2026',
-        icon: '🎵',
-        href: '/uk/articles/muzychnyi-vechir',
-      },
-      {
-        id: '3',
-        title: 'Мовні курси для дорослих: нова група у вересні',
-        date: '20 травня 2026',
-        icon: '📚',
-        href: '/uk/articles/movni-kursy',
-      },
-    ],
-  };
+interface ArticlePageProps {
+  params: Promise<{
+    locale: string;
+    slug: string;
+  }>;
+}
+
+function estimateReadingTime(text: string): number {
+  const words = text.split(/\s+/).length;
+  return Math.max(1, Math.round(words / 200));
+}
+
+function extractHeadings(markdown: string): { id: string; label: string }[] {
+  const headingRegex = /^#{2,3}\s+(.+)$/gm;
+  const headings: { id: string; label: string }[] = [];
+  let match;
+  let index = 0;
+  while ((match = headingRegex.exec(markdown)) !== null) {
+    index++;
+    headings.push({
+      id: `heading-${index}`,
+      label: match[1].trim(),
+    });
+  }
+  return headings;
+}
+
+function formatDate(dateString: string, locale: string): string {
+  return new Date(dateString).toLocaleDateString(
+    locale === 'uk' ? 'uk-UA' : 'de-CH',
+    { day: 'numeric', month: 'long', year: 'numeric' },
+  );
+}
+
+export default async function ArticlePage({ params }: ArticlePageProps) {
+  const { locale, slug } = await params;
+
+  const [article, t] = await Promise.all([
+    getArticleBySlug(slug),
+    getTranslations('header'),
+  ]);
+
+  if (!article) {
+    notFound();
+  }
+
+  const isDE = locale === 'de';
+
+  if (isDE && !article.body_de) {
+    redirect('/de');
+  }
+
+  const title = isDE && article.title_de ? article.title_de : article.title;
+  const body = isDE && article.body_de ? article.body_de : article.body;
+
+  const categoryNames = (article.categories ?? [])
+    .map((c) => (isDE && c.name_de) ? c.name_de : c.name)
+    .slice(-3);
+  const authorName = article.author?.name || (isDE ? 'Redaktion' : 'Редакція');
+  const authorRole = article.author?.role ?? '';
+  const avatarUrl = getStrapiImageUrl(article.author?.avatar ?? null);
+  const avatarInitials = authorName
+    .split(' ')
+    .map((w) => w[0])
+    .join('')
+    .slice(0, 2);
+
+  const publishedAt = article.publishedAt
+    ? formatDate(article.publishedAt, locale)
+    : '';
+
+  const readingTime = estimateReadingTime(body);
+  const tableOfContents = extractHeadings(body);
+
+  const coverUrl = getStrapiImageUrl(article.coverImage);
+
+  const allArticles = await getArticles(4);
+  const relatedArticles = allArticles
+    .filter((a) => a.slug !== slug)
+    .filter((a) => !isDE || a.body_de)
+    .slice(0, 3)
+    .map((a) => ({
+      id: String(a.id),
+      title: isDE && a.title_de ? a.title_de : a.title,
+      date: a.publishedAt ? formatDate(a.publishedAt, locale) : '',
+      icon: '📰',
+      href: `/${locale}/articles/${a.slug}`,
+    }));
 
   return (
     <div className="portal">
@@ -93,20 +113,44 @@ export default function ArticlePage() {
         <article className="article-page">
           <Breadcrumb
             items={[
-              { label: 'Новини', href: '/uk' },
-              { label: article.categories[1] },
+              { label: t('nav.news'), href: `/${locale}` },
+              ...(categoryNames.length > 0
+                ? [{ label: categoryNames[0] }]
+                : []),
             ]}
           />
 
           <ArticleHeader
-            title={article.title}
-            categories={article.categories}
-            author={article.author}
-            publishedAt={article.publishedAt}
-            readingTime={article.readingTime}
+            title={title}
+            categories={categoryNames}
+            author={{
+              name: authorName,
+              role: authorRole,
+              avatarUrl: avatarUrl,
+              initials: avatarInitials,
+            }}
+            publishedAt={publishedAt}
+            readingTime={readingTime}
           />
 
-          <ArticleContent coverIcon={article.coverIcon} content={article.content} />
+          {coverUrl ? (
+            <div className="article-cover">
+              <img
+                src={coverUrl}
+                alt={article.coverImage?.alternativeText || title}
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              />
+            </div>
+          ) : (
+            <div className="article-cover">
+              <span className="placeholder-icon" style={{ fontSize: '3rem' }}>
+                🖼
+              </span>
+              <span className="placeholder-text">Фото обкладинки</span>
+            </div>
+          )}
+
+          <ArticleBody content={body} />
 
           <div className="divider"></div>
 
@@ -114,11 +158,15 @@ export default function ArticlePage() {
 
           <div className="divider"></div>
 
-          <RelatedArticles articles={article.relatedArticles} />
+          {relatedArticles.length > 0 && (
+            <RelatedArticles articles={relatedArticles} />
+          )}
         </article>
 
         <aside className="article-sidebar">
-          <TableOfContents items={article.tableOfContents} />
+          {tableOfContents.length > 0 && (
+            <TableOfContents items={tableOfContents} />
+          )}
           <SubscribeSidebar />
         </aside>
       </div>

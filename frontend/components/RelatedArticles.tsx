@@ -1,3 +1,7 @@
+'use client';
+
+import { useTranslations } from 'next-intl';
+
 interface RelatedArticle {
   id: string;
   title: string;
@@ -11,9 +15,11 @@ interface RelatedArticlesProps {
 }
 
 export default function RelatedArticles({ articles }: RelatedArticlesProps) {
+  const t = useTranslations('article');
+
   return (
     <div>
-      <p className="section-label">Читайте також</p>
+      <p className="section-label">{t('related')}</p>
       <div className="related-cards">
         {articles.map((article) => (
           <a key={article.id} href={article.href} className="related-card">

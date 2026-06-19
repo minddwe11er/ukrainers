@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslations } from 'next-intl';
 
 interface TOCItem {
   id: string;
@@ -12,6 +13,7 @@ interface TableOfContentsProps {
 }
 
 export default function TableOfContents({ items }: TableOfContentsProps) {
+  const t = useTranslations('article');
   const [activeId, setActiveId] = useState<string>(items[0]?.id || '');
 
   const handleClick = (id: string) => {
@@ -22,7 +24,7 @@ export default function TableOfContents({ items }: TableOfContentsProps) {
 
   return (
     <div className="sidebar-box">
-      <p className="section-label">Зміст</p>
+      <p className="section-label">{t('toc')}</p>
       <div className="toc">
         {items.map((item) => (
           <a
