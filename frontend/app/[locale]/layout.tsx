@@ -4,6 +4,7 @@ import { getMessages } from 'next-intl/server';
 import '../globals.css';
 import { routing } from '../../i18n/routing';
 import { notFound } from 'next/navigation';
+import Script from 'next/script';
 import ScrollToTop from '@/components/ScrollToTop';
 
 export const metadata: Metadata = {
@@ -34,9 +35,9 @@ export default async function LocaleLayout({
     return (
         <html lang={locale} suppressHydrationWarning>
             <head>
-                <script dangerouslySetInnerHTML={{ __html: `
+                <Script id="theme-init" strategy="beforeInteractive">{`
                     (function(){try{var t=localStorage.getItem('theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark')}catch(e){}})();
-                ` }} />
+                `}</Script>
             </head>
             <body>
                 <NextIntlClientProvider messages={messages}>

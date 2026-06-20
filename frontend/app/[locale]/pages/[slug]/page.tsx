@@ -3,6 +3,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ArticleBody from '@/components/ArticleBody';
 import { getPageBySlug } from '@/lib/strapi';
+import { localizePage } from '@/lib/localize';
 
 interface PageProps {
   params: Promise<{
@@ -13,19 +14,16 @@ interface PageProps {
 
 export default async function DynamicPage({ params }: PageProps) {
   const { locale, slug } = await params;
-  const isDE = locale === 'de';
-
   const page = await getPageBySlug(slug);
 
   if (!page) {
     notFound();
   }
 
-  const title = page.title;
-  const body = isDE && page.body_de ? page.body_de : page.body;
+  const { title, body } = localizePage(page, locale);
 
   if (!body) {
-    if (isDE) {
+    if (locale === 'de') {
       const { redirect } = await import('next/navigation');
       redirect('/de');
     }

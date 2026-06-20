@@ -5,6 +5,7 @@ import Sidebar from '@/components/Sidebar';
 import Subscribe from '@/components/Subscribe';
 import Footer from '@/components/Footer';
 import { getArticles, getStrapiImageUrl } from '@/lib/strapi';
+import { localizeArticle, localizeCategory } from '@/lib/localize';
 
 interface HomeProps {
     params: Promise<{ locale: string }>;
@@ -26,39 +27,29 @@ const HERO_CATEGORY = 'Важливо';
 
 export default async function Home({ params }: HomeProps) {
     const { locale } = await params;
-    const isDE = locale === 'de';
-
     const allArticles = await getArticles(6);
 
-    const visibleArticles = allArticles.filter(a => !isDE || a.body_de);
+    const visibleArticles = allArticles.filter(a => locale !== 'de' || a.body_de);
 
     const heroRaw = visibleArticles.find(a =>
         (a.categories ?? []).some(c => c.name === HERO_CATEGORY),
     );
+    const heroLocalized = heroRaw ? localizeArticle(heroRaw, locale) : null;
+    const heroCat = (heroRaw?.categories ?? []).find(c => c.name === HERO_CATEGORY);
 
-    const heroArticle = heroRaw
+    const heroArticle = heroLocalized
         ? {
-              slug: heroRaw.slug,
-              title:
-                  isDE && heroRaw.title_de ? heroRaw.title_de : heroRaw.title,
-              description:
-                  isDE && heroRaw.descr_de
-                      ? heroRaw.descr_de
-                      : heroRaw.descr || null,
-              category: isDE
-                  ? (heroRaw.categories ?? []).find(
-                        c => c.name === HERO_CATEGORY,
-                    )?.name_de || HERO_CATEGORY
+              slug: heroLocalized.slug,
+              title: heroLocalized.title,
+              description: heroLocalized.descr || null,
+              category: heroCat
+                  ? localizeCategory(heroCat, locale).name
                   : HERO_CATEGORY,
-              date: heroRaw.publishedAt
-                  ? formatDate(heroRaw.publishedAt, locale)
+              date: heroLocalized.publishedAt
+                  ? formatDate(heroLocalized.publishedAt, locale)
                   : '',
-              author:
-                  (isDE && heroRaw.author?.name_de
-                      ? heroRaw.author.name_de
-                      : heroRaw.author?.name) ||
-                  (isDE ? 'Redaktion' : 'Редакція'),
-              coverUrl: getStrapiImageUrl(heroRaw.coverImage),
+              author: heroLocalized.author.name,
+              coverUrl: getStrapiImageUrl(heroLocalized.coverImage),
               locale,
           }
         : null;
@@ -66,19 +57,15 @@ export default async function Home({ params }: HomeProps) {
     const articles = visibleArticles
         .filter(a => a.slug !== heroRaw?.slug)
         .map(a => {
-            const body = isDE && a.body_de ? a.body_de : a.body;
+            const la = localizeArticle(a, locale);
             return {
-                slug: a.slug,
-                title: isDE && a.title_de ? a.title_de : a.title,
-                description: isDE && a.descr_de ? a.descr_de : a.descr || null,
-                category: (a.categories ?? [])[0]
-                    ? isDE && a.categories[0].name_de
-                        ? a.categories[0].name_de
-                        : a.categories[0].name
-                    : null,
-                date: a.publishedAt ? formatDate(a.publishedAt, locale) : '',
-                readingTime: estimateReadingTime(body),
-                thumbnailUrl: getStrapiImageUrl(a.coverImage),
+                slug: la.slug,
+                title: la.title,
+                description: la.descr || null,
+                category: la.categories[0]?.name ?? null,
+                date: la.publishedAt ? formatDate(la.publishedAt, locale) : '',
+                readingTime: estimateReadingTime(la.body),
+                thumbnailUrl: getStrapiImageUrl(la.coverImage),
                 locale,
             };
         });

@@ -92,7 +92,6 @@ export async function getArticleBySlug(
     'populate[author][populate]': 'avatar',
     'populate[coverImage]': 'true',
     'status': 'published',
-    'locale': 'uk',
   });
 
   return data?.[0] ?? null;
@@ -108,7 +107,6 @@ export async function getArticles(
     'sort': 'publishedAt:desc',
     'pagination[pageSize]': String(pageSize),
     'status': 'published',
-    'locale': 'uk',
   });
 
   return data ?? [];
@@ -126,7 +124,6 @@ export interface StrapiPage {
 export async function getPageBySlug(slug: string): Promise<StrapiPage | null> {
   const { data } = await fetchStrapi<StrapiPage[]>('/pages', {
     'filters[slug][$eq]': slug,
-    'locale': 'uk',
     'status': 'published',
   });
 
@@ -136,7 +133,6 @@ export async function getPageBySlug(slug: string): Promise<StrapiPage | null> {
 export async function getAuthors(): Promise<StrapiAuthor[]> {
   const { data } = await fetchStrapi<StrapiAuthor[]>('/authors', {
     'populate': 'avatar',
-    'locale': 'uk',
   });
 
   return data ?? [];

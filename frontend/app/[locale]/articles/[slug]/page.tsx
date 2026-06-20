@@ -11,6 +11,7 @@ import SubscribeSidebar from '@/components/SubscribeSidebar';
 import Footer from '@/components/Footer';
 import { getTranslations } from 'next-intl/server';
 import { getArticleBySlug, getArticles, getStrapiImageUrl } from '@/lib/strapi';
+import { localizeArticle } from '@/lib/localize';
 
 interface ArticlePageProps {
     params: Promise<{
@@ -58,32 +59,13 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         notFound();
     }
 
-    const isDE = locale === 'de';
-
-    if (isDE && !article.body_de) {
+    if (locale === 'de' && !article.body_de) {
         redirect('/de');
     }
 
-    const title = isDE && article.title_de ? article.title_de : article.title;
-    const body = isDE && article.body_de ? article.body_de : article.body;
-
-    const categoryNames = (article.categories ?? [])
-        .map(c => (isDE && c.name_de ? c.name_de : c.name))
-        .slice(-3);
-    const authorName =
-        (isDE && article.author?.name_de
-            ? article.author.name_de
-            : article.author?.name) || (isDE ? 'Redaktion' : 'Редакція');
-    const authorRole =
-        (isDE && article.author?.role_de
-            ? article.author.role_de
-            : article.author?.role) ?? '';
-    const avatarUrl = getStrapiImageUrl(article.author?.avatar ?? null);
-    const avatarInitials = authorName
-        .split(' ')
-        .map(w => w[0])
-        .join('')
-        .slice(0, 2);
+    const { title, body, categories, author } = localizeArticle(article, locale);
+    const categoryNames = categories.map(c => c.name).slice(-3);
+    const avatarUrl = getStrapiImageUrl(author.avatar);
 
     const publishedAt = article.publishedAt
         ? formatDate(article.publishedAt, locale)
@@ -94,11 +76,11 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
     const coverUrl = getStrapiImageUrl(article.coverImage);
 
-    const currentCategorySlugs = (article.categories ?? []).map(c => c.slug);
+    const currentCategorySlugs = categories.map(c => c.slug);
     const allArticles = await getArticles(10);
     const candidates = allArticles
         .filter(a => a.slug !== slug)
-        .filter(a => !isDE || a.body_de);
+        .filter(a => locale !== 'de' || a.body_de);
     const sameCategory = candidates.filter(a =>
         (a.categories ?? []).some(c => currentCategorySlugs.includes(c.slug))
     );
@@ -107,18 +89,17 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
     );
     const relatedArticles = [...sameCategory, ...otherCategory]
         .slice(0, 3)
-        .map(a => ({
-            id: String(a.id),
-            title: isDE && a.title_de ? a.title_de : a.title,
-            date: a.publishedAt ? formatDate(a.publishedAt, locale) : '',
-            category: (a.categories ?? [])[0]
-                ? isDE && a.categories[0].name_de
-                    ? a.categories[0].name_de
-                    : a.categories[0].name
-                : null,
-            thumbnailUrl: getStrapiImageUrl(a.coverImage),
-            href: `/${locale}/articles/${a.slug}`,
-        }));
+        .map(a => {
+            const la = localizeArticle(a, locale);
+            return {
+                id: String(la.id),
+                title: la.title,
+                date: la.publishedAt ? formatDate(la.publishedAt, locale) : '',
+                category: la.categories[0]?.name ?? null,
+                thumbnailUrl: getStrapiImageUrl(la.coverImage),
+                href: `/${locale}/articles/${la.slug}`,
+            };
+        });
 
     return (
         <div className="portal">
@@ -139,10 +120,10 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                         title={title}
                         categories={categoryNames}
                         author={{
-                            name: authorName,
-                            role: authorRole,
+                            name: author.name,
+                            role: author.role,
                             avatarUrl: avatarUrl,
-                            initials: avatarInitials,
+                            initials: author.initials,
                         }}
                         publishedAt={publishedAt}
                         readingTime={readingTime}

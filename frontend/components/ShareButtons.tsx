@@ -1,16 +1,21 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 
 export default function ShareButtons() {
   const t = useTranslations('article');
+  const [currentUrl, setCurrentUrl] = useState('');
+
+  useEffect(() => {
+    setCurrentUrl(window.location.href);
+  }, []);
+
   const handleCopyLink = () => {
     navigator.clipboard.writeText(window.location.href);
   };
 
-  const telegramShareUrl = `https://t.me/share/url?url=${encodeURIComponent(
-    typeof window !== 'undefined' ? window.location.href : ''
-  )}`;
+  const telegramShareUrl = `https://t.me/share/url?url=${encodeURIComponent(currentUrl)}`;
 
   return (
     <>
