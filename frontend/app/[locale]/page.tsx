@@ -48,7 +48,7 @@ export default async function Home({ params }: HomeProps) {
               date: heroLocalized.publishedAt
                   ? formatDate(heroLocalized.publishedAt, locale)
                   : '',
-              author: heroLocalized.author.name,
+              author: heroLocalized.authors[0]?.name ?? '',
               coverUrl: getStrapiImageUrl(heroLocalized.coverImage),
               locale,
           }
@@ -76,7 +76,7 @@ export default async function Home({ params }: HomeProps) {
             <Hero article={heroArticle} />
             <div className="main">
                 <ArticleList articles={articles} />
-                <Sidebar />
+                <Sidebar locale={locale} />
             </div>
             <Subscribe />
             <Footer />

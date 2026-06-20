@@ -63,9 +63,8 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         redirect('/de');
     }
 
-    const { title, body, categories, author } = localizeArticle(article, locale);
+    const { title, body, categories, authors } = localizeArticle(article, locale);
     const categoryNames = categories.map(c => c.name).slice(-3);
-    const avatarUrl = getStrapiImageUrl(author.avatar);
 
     const publishedAt = article.publishedAt
         ? formatDate(article.publishedAt, locale)
@@ -119,12 +118,12 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                     <ArticleHeader
                         title={title}
                         categories={categoryNames}
-                        author={{
-                            name: author.name,
-                            role: author.role,
-                            avatarUrl: avatarUrl,
-                            initials: author.initials,
-                        }}
+                        authors={authors.map(a => ({
+                            name: a.name,
+                            role: a.role,
+                            avatarUrl: getStrapiImageUrl(a.avatar),
+                            initials: a.initials,
+                        }))}
                         publishedAt={publishedAt}
                         readingTime={readingTime}
                     />

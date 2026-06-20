@@ -1,0 +1,155 @@
+import { notFound } from 'next/navigation';
+import { redirect } from 'next/navigation';
+import Breadcrumb from '@/components/Breadcrumb';
+import Header from '@/components/Header';
+import ArticleHeader from '@/components/ArticleHeader';
+import ArticleBody from '@/components/ArticleBody';
+import ShareButtons from '@/components/ShareButtons';
+import SubscribeSidebar from '@/components/SubscribeSidebar';
+import Footer from '@/components/Footer';
+import { getTranslations } from 'next-intl/server';
+import { getEventBySlug, getStrapiImageUrl } from '@/lib/strapi';
+import { localizeEvent } from '@/lib/localize';
+
+interface EventPageProps {
+    params: Promise<{
+        locale: string;
+        slug: string;
+    }>;
+}
+
+function estimateReadingTime(text: string): number {
+    const words = text.split(/\s+/).length;
+    return Math.max(1, Math.round(words / 200));
+}
+
+function formatDate(dateString: string, locale: string): string {
+    return new Date(dateString).toLocaleDateString(
+        locale === 'uk' ? 'uk-UA' : 'de-CH',
+        { day: 'numeric', month: 'long', year: 'numeric' },
+    );
+}
+
+function formatEventDateTime(dateString: string, locale: string): string {
+    const date = new Date(dateString);
+    const dateFormatted = date.toLocaleDateString(
+        locale === 'uk' ? 'uk-UA' : 'de-CH',
+        { day: 'numeric', month: 'long', year: 'numeric' },
+    );
+    const timeFormatted = date.toLocaleTimeString(
+        locale === 'uk' ? 'uk-UA' : 'de-CH',
+        { hour: '2-digit', minute: '2-digit' },
+    );
+    return `${dateFormatted}, ${timeFormatted}`;
+}
+
+export default async function EventPage({ params }: EventPageProps) {
+    const { locale, slug } = await params;
+
+    const [event, t] = await Promise.all([
+        getEventBySlug(slug),
+        getTranslations('header'),
+    ]);
+
+    if (!event) {
+        notFound();
+    }
+
+    if (locale === 'de' && !event.body_de) {
+        redirect('/de');
+    }
+
+    const tEvent = await getTranslations('event');
+
+    const { title, body, location } = localizeEvent(event, locale);
+
+    const publishedAt = event.publishedAt
+        ? formatDate(event.publishedAt, locale)
+        : '';
+
+    const readingTime = estimateReadingTime(body);
+    const coverUrl = getStrapiImageUrl(event.coverImage);
+    const eventDateTime = formatEventDateTime(event.date, locale);
+
+    const authors = [{
+        name: locale === 'de' ? 'Redaktion' : 'Редакція',
+        role: '',
+        avatarUrl: null,
+        initials: locale === 'de' ? 'Re' : 'Ре',
+    }];
+
+    return (
+        <div className="portal">
+            <Header />
+
+            <div className="article-layout">
+                <article className="article-page">
+                    <Breadcrumb
+                        items={[
+                            { label: t('nav.events'), href: `/${locale}` },
+                        ]}
+                    />
+
+                    <ArticleHeader
+                        title={title}
+                        categories={[]}
+                        authors={authors}
+                        publishedAt={publishedAt}
+                        readingTime={readingTime}
+                    />
+
+                    <div className="event-details-box">
+                        <div className="event-detail">
+                            <span>📅 {tEvent('date')}: {eventDateTime}</span>
+                        </div>
+                        {location && (
+                            <div className="event-detail">
+                                <span>📍 {tEvent('location')}: {location}</span>
+                            </div>
+                        )}
+                    </div>
+
+                    {coverUrl ? (
+                        <div className="article-cover">
+                            <img
+                                src={coverUrl}
+                                alt={
+                                    event.coverImage?.alternativeText || title
+                                }
+                                style={{
+                                    width: '100%',
+                                    height: '100%',
+                                    objectFit: 'cover',
+                                }}
+                            />
+                        </div>
+                    ) : (
+                        <div className="article-cover">
+                            <span
+                                className="placeholder-icon"
+                                style={{ fontSize: '3rem' }}
+                            >
+                                🖼
+                            </span>
+                            <span className="placeholder-text">
+                                Фото обкладинки
+                            </span>
+                        </div>
+                    )}
+
+                    <ArticleBody content={body} />
+
+                    <div className="divider"></div>
+
+                    <ShareButtons />
+                </article>
+
+                <aside className="article-sidebar">
+                    <SubscribeSidebar />
+                </aside>
+            </div>
+
+            <Footer />
+        </div>
+    );
+}

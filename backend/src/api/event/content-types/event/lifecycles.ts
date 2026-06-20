@@ -16,8 +16,5 @@ export default {
     if (data.slug === '' || data.slug === null) {
       data.slug = generateId();
     }
-    if (data.publishedAt && !data.originalPublishedAt) {
-      data.originalPublishedAt = data.publishedAt;
-    }
   },
 };

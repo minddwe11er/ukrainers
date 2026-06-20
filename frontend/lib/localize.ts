@@ -2,6 +2,7 @@ import type {
     StrapiArticle,
     StrapiAuthor,
     StrapiCategory,
+    StrapiEvent,
     StrapiPage,
 } from './strapi';
 
@@ -24,21 +25,38 @@ export function localizeCategory(category: StrapiCategory, locale: string) {
     return { ...category, name: loc(isDE, category.name_de, category.name) };
 }
 
-export function localizeAuthor(author: StrapiAuthor | null, locale: string) {
+export interface LocalizedAuthor {
+    name: string;
+    role: string;
+    avatar: StrapiAuthor['avatar'];
+    initials: string;
+}
+
+export function localizeAuthor(author: StrapiAuthor, locale: string): LocalizedAuthor {
     const isDE = locale === 'de';
-    const name =
-        loc(isDE, author?.name_de, author?.name ?? '') ||
-        (isDE ? 'Redaktion' : 'Редакція');
+    const name = loc(isDE, author.name_de, author.name);
     return {
         name,
-        role: loc(isDE, author?.role_de, author?.role ?? null) ?? '',
-        avatar: author?.avatar ?? null,
+        role: loc(isDE, author.role_de, author.role ?? null) ?? '',
+        avatar: author.avatar ?? null,
         initials: name
             .split(' ')
             .map(w => w[0])
             .join('')
             .slice(0, 2),
     };
+}
+
+export function localizeAuthors(authors: StrapiAuthor[], locale: string): LocalizedAuthor[] {
+    if (authors.length === 0) {
+        return [{
+            name: locale === 'de' ? 'Redaktion' : 'Редакція',
+            role: '',
+            avatar: null,
+            initials: locale === 'de' ? 'Re' : 'Ре',
+        }];
+    }
+    return authors.map(a => localizeAuthor(a, locale));
 }
 
 export function localizeArticle(article: StrapiArticle, locale: string) {
@@ -51,7 +69,17 @@ export function localizeArticle(article: StrapiArticle, locale: string) {
         categories: (article.categories ?? []).map(c =>
             localizeCategory(c, locale),
         ),
-        author: localizeAuthor(article.author, locale),
+        authors: localizeAuthors(article.authors ?? [], locale),
+    };
+}
+
+export function localizeEvent(event: StrapiEvent, locale: string) {
+    const isDE = locale === 'de';
+    return {
+        ...event,
+        title: loc(isDE, event.title_de, event.title),
+        body: loc(isDE, event.body_de, event.body),
+        location: loc(isDE, event.location_de, event.location),
     };
 }
 

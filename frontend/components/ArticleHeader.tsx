@@ -3,15 +3,17 @@
 import { useTranslations } from 'next-intl';
 import { getCategoryClass } from '@/lib/category-style';
 
+interface AuthorInfo {
+  name: string;
+  role: string;
+  avatarUrl: string | null;
+  initials: string;
+}
+
 interface ArticleHeaderProps {
   title: string;
   categories: string[];
-  author: {
-    name: string;
-    role: string;
-    avatarUrl: string | null;
-    initials: string;
-  };
+  authors: AuthorInfo[];
   publishedAt: string;
   readingTime: number;
 }
@@ -19,7 +21,7 @@ interface ArticleHeaderProps {
 export default function ArticleHeader({
   title,
   categories,
-  author,
+  authors,
   publishedAt,
   readingTime,
 }: ArticleHeaderProps) {
@@ -38,16 +40,22 @@ export default function ArticleHeader({
       <h1 className="article-page-title">{title}</h1>
 
       <div className="author-row">
-        <div className="avatar">
-          {author.avatarUrl ? (
-            <img src={author.avatarUrl} alt={author.name} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
-          ) : (
-            author.initials
-          )}
-        </div>
-        <div className="author-info">
-          <div className="author-name">{author.name}</div>
-          <div className="author-role">{author.role}</div>
+        <div className="authors-list">
+          {authors.map((author, i) => (
+            <div key={i} className="author-entry">
+              <div className="avatar">
+                {author.avatarUrl ? (
+                  <img src={author.avatarUrl} alt={author.name} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
+                ) : (
+                  author.initials
+                )}
+              </div>
+              <div className="author-info">
+                <div className="author-name">{author.name}</div>
+                <div className="author-role">{author.role}</div>
+              </div>
+            </div>
+          ))}
         </div>
         <div className="article-page-meta">
           <span>📅 {publishedAt}</span>

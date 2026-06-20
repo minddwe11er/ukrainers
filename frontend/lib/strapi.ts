@@ -57,8 +57,9 @@ export interface StrapiArticle {
   slug: string;
   coverImage: StrapiImage | null;
   categories: StrapiCategory[];
-  author: StrapiAuthor | null;
+  authors: StrapiAuthor[];
   publishedAt: string | null;
+  originalPublishedAt: string | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -89,7 +90,7 @@ export async function getArticleBySlug(
   const { data } = await fetchStrapi<StrapiArticle[]>('/articles', {
     'filters[slug][$eq]': slug,
     'populate[categories]': 'true',
-    'populate[author][populate]': 'avatar',
+    'populate[authors][populate]': 'avatar',
     'populate[coverImage]': 'true',
     'status': 'published',
   });
@@ -102,14 +103,31 @@ export async function getArticles(
 ): Promise<StrapiArticle[]> {
   const { data } = await fetchStrapi<StrapiArticle[]>('/articles', {
     'populate[categories]': 'true',
-    'populate[author]': 'true',
+    'populate[authors][populate]': 'avatar',
     'populate[coverImage]': 'true',
-    'sort': 'publishedAt:desc',
+    'sort': 'originalPublishedAt:desc',
     'pagination[pageSize]': String(pageSize),
     'status': 'published',
   });
 
   return data ?? [];
+}
+
+export interface StrapiEvent {
+  id: number;
+  documentId: string;
+  title: string;
+  title_de: string | null;
+  body: string;
+  body_de: string | null;
+  slug: string;
+  date: string;
+  location: string | null;
+  location_de: string | null;
+  coverImage: StrapiImage | null;
+  publishedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface StrapiPage {
@@ -133,6 +151,40 @@ export async function getPageBySlug(slug: string): Promise<StrapiPage | null> {
 export async function getAuthors(): Promise<StrapiAuthor[]> {
   const { data } = await fetchStrapi<StrapiAuthor[]>('/authors', {
     'populate': 'avatar',
+  });
+
+  return data ?? [];
+}
+
+export async function getEvents(): Promise<StrapiEvent[]> {
+  const { data } = await fetchStrapi<StrapiEvent[]>('/events', {
+    'populate[coverImage]': 'true',
+    'sort': 'date:asc',
+    'status': 'published',
+  });
+
+  return data ?? [];
+}
+
+export async function getEventBySlug(
+  slug: string,
+): Promise<StrapiEvent | null> {
+  const { data } = await fetchStrapi<StrapiEvent[]>('/events', {
+    'filters[slug][$eq]': slug,
+    'populate[coverImage]': 'true',
+    'status': 'published',
+  });
+
+  return data?.[0] ?? null;
+}
+
+export async function getUpcomingEvents(): Promise<StrapiEvent[]> {
+  const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+  const { data } = await fetchStrapi<StrapiEvent[]>('/events', {
+    'filters[date][$gte]': oneHourAgo,
+    'sort': 'date:asc',
+    'pagination[pageSize]': '5',
+    'status': 'published',
   });
 
   return data ?? [];

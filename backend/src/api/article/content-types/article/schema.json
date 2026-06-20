@@ -47,9 +47,9 @@
       "target": "api::category.category",
       "inversedBy": "articles"
     },
-    "author": {
+    "authors": {
       "type": "relation",
-      "relation": "manyToOne",
+      "relation": "manyToMany",
       "target": "api::author.author",
       "inversedBy": "articles"
     },
@@ -58,6 +58,9 @@
     },
     "sensitive": {
       "type": "boolean"
+    },
+    "originalPublishedAt": {
+      "type": "datetime"
     }
   }
 }

@@ -6,7 +6,7 @@ const STORAGE_KEY = 'theme';
 
 function SunIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg className="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <circle cx="12" cy="12" r="5" fill="#f59e0b" stroke="#f59e0b" />
       <line x1="12" y1="1" x2="12" y2="3" stroke="#f59e0b" />
       <line x1="12" y1="21" x2="12" y2="23" stroke="#f59e0b" />
@@ -22,32 +22,30 @@ function SunIcon() {
 
 function MoonIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="#6366f1" stroke="#6366f1" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg className="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="#6366f1" stroke="#6366f1" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
     </svg>
   );
 }
 
 export default function ThemeSwitcher() {
-  const [dark, setDark] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    const isDark = saved === 'dark';
-    setDark(isDark);
-    document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+    setMounted(true);
   }, []);
 
   const toggle = () => {
-    const next = !dark;
-    setDark(next);
-    localStorage.setItem(STORAGE_KEY, next ? 'dark' : 'light');
-    document.documentElement.setAttribute('data-theme', next ? 'dark' : 'light');
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    const next = isDark ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem(STORAGE_KEY, next);
   };
 
   return (
-    <button onClick={toggle} className="theme-switcher" aria-label="Toggle theme">
-      {dark ? <SunIcon /> : <MoonIcon />}
+    <button onClick={mounted ? toggle : undefined} className="theme-switcher" aria-label="Toggle theme">
+      <SunIcon />
+      <MoonIcon />
     </button>
   );
 }

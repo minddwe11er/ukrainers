@@ -17,7 +17,13 @@
         "label": "Aktuelle Nachrichten"
     },
     "events": {
-        "label": "Anstehende Veranstaltungen"
+        "label": "Anstehende Veranstaltungen",
+        "empty": "Keine geplanten Veranstaltungen"
+    },
+    "event": {
+        "date": "Datum",
+        "location": "Ort",
+        "readTime": "Min Lesezeit"
     },
     "subscribe": {
         "title": "Nachrichten direkt in Ihren Posteingang",
