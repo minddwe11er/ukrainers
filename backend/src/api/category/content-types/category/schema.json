@@ -16,11 +16,11 @@
       "required": true
     },
     "name_de": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "slug": {
       "type": "string",
-      "required": true,
       "unique": true
     },
     "articles": {

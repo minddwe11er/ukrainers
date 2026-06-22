@@ -10,9 +10,6 @@ export default {
     if (!data.slug) {
       data.slug = generateId();
     }
-    if (!data.originalPublishedAt) {
-      data.originalPublishedAt = new Date().toISOString();
-    }
   },
   beforeUpdate(event: any) {
     const { data } = event.params;

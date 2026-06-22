@@ -79,7 +79,7 @@ export function localizeEvent(event: StrapiEvent, locale: string) {
         ...event,
         title: loc(isDE, event.title_de, event.title),
         body: loc(isDE, event.body_de, event.body),
-        location: loc(isDE, event.location_de, event.location),
+        location: event.location,
     };
 }
 

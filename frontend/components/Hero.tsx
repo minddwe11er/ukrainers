@@ -43,7 +43,9 @@ export default function Hero({ article }: HeroProps) {
           {article.category && (
             <span className={`badge ${getCategoryClass(article.category)}`}>{article.category}</span>
           )}
-          <h2 className="hero-title">{article.title}</h2>
+          <a href={`/${article.locale}/articles/${article.slug}`} className="hero-title-link">
+            <h2 className="hero-title">{article.title}</h2>
+          </a>
           {article.description && (
             <p className="hero-excerpt">{article.description}</p>
           )}

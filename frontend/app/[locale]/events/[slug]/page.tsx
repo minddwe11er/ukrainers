@@ -71,12 +71,14 @@ export default async function EventPage({ params }: EventPageProps) {
     const coverUrl = getStrapiImageUrl(event.coverImage);
     const eventDateTime = formatEventDateTime(event.date, locale);
 
-    const authors = [{
-        name: locale === 'de' ? 'Redaktion' : 'Редакція',
-        role: '',
-        avatarUrl: null,
-        initials: locale === 'de' ? 'Re' : 'Ре',
-    }];
+    const authors = [
+        {
+            name: locale === 'de' ? 'Redaktion' : 'Редакція',
+            role: '',
+            avatarUrl: null,
+            initials: locale === 'de' ? 'Re' : 'Ре',
+        },
+    ];
 
     return (
         <div className="portal">
@@ -85,9 +87,7 @@ export default async function EventPage({ params }: EventPageProps) {
             <div className="article-layout">
                 <article className="article-page">
                     <Breadcrumb
-                        items={[
-                            { label: t('nav.events'), href: `/${locale}` },
-                        ]}
+                        items={[{ label: t('nav.events'), href: `/${locale}` }]}
                     />
 
                     <ArticleHeader
@@ -100,11 +100,29 @@ export default async function EventPage({ params }: EventPageProps) {
 
                     <div className="event-details-box">
                         <div className="event-detail">
-                            <span>📅 {tEvent('date')}: {eventDateTime}</span>
+                            <span>
+                                📅 {tEvent('date')}: {eventDateTime}
+                            </span>
                         </div>
                         {location && (
                             <div className="event-detail">
-                                <span>📍 {tEvent('location')}: {location}</span>
+                                <span>
+                                    📍 {tEvent('location')}:{' '}
+                                    {/online|онлайн|zoom|facebook|discord|youtube/i.test(
+                                        location,
+                                    ) ? (
+                                        location
+                                    ) : (
+                                        <a
+                                            href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location)}`}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="event-location-link"
+                                        >
+                                            {location}
+                                        </a>
+                                    )}
+                                </span>
                             </div>
                         )}
                     </div>
@@ -113,9 +131,7 @@ export default async function EventPage({ params }: EventPageProps) {
                         <div className="article-cover">
                             <img
                                 src={coverUrl}
-                                alt={
-                                    event.coverImage?.alternativeText || title
-                                }
+                                alt={event.coverImage?.alternativeText || title}
                                 style={{
                                     width: '100%',
                                     height: '100%',

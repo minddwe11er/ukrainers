@@ -38,9 +38,6 @@
       "type": "string",
       "required": true
     },
-    "location_de": {
-      "type": "string"
-    },
     "coverImage": {
       "type": "media",
       "multiple": false,

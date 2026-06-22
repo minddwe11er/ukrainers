@@ -1,6 +1,6 @@
 {
     "header": {
-        "logo": "Ukraїners",
+        "logo": "Wir sind razom",
         "nav": {
             "news": "Nachrichten",
             "events": "Veranstaltungen",
@@ -18,7 +18,9 @@
     },
     "events": {
         "label": "Anstehende Veranstaltungen",
-        "empty": "Keine geplanten Veranstaltungen"
+        "empty": "Keine geplanten Veranstaltungen",
+        "readMore": "Mehr erfahren →",
+        "showOnMap": "📍 Auf der Karte"
     },
     "event": {
         "date": "Datum",

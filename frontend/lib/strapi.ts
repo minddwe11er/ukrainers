@@ -108,6 +108,7 @@ export async function getArticles(
     'sort': 'originalPublishedAt:desc',
     'pagination[pageSize]': String(pageSize),
     'status': 'published',
+    'filters[originalPublishedAt][$lte]': new Date().toISOString(),
   });
 
   return data ?? [];
@@ -123,7 +124,6 @@ export interface StrapiEvent {
   slug: string;
   date: string;
   location: string | null;
-  location_de: string | null;
   coverImage: StrapiImage | null;
   publishedAt: string | null;
   createdAt: string;
