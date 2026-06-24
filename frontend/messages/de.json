@@ -2,9 +2,8 @@
     "header": {
         "logo": "Wir sind razom",
         "nav": {
+            "home": "Startseite",
             "news": "Nachrichten",
-            "events": "Veranstaltungen",
-            "articles": "Artikel",
             "about": "Über uns"
         }
     },
@@ -17,6 +16,7 @@
         "label": "Aktuelle Nachrichten"
     },
     "events": {
+        "breadcrumb": "Veranstaltungen",
         "label": "Anstehende Veranstaltungen",
         "empty": "Keine geplanten Veranstaltungen",
         "readMore": "Mehr erfahren →",
@@ -31,13 +31,23 @@
         "title": "Nachrichten direkt in Ihren Posteingang",
         "description": "Wöchentlich die wichtigsten Neuigkeiten aus unserer Gemeinschaft. Kein Spam, nur nützliche Inhalte.",
         "button": "Abonnieren",
-        "placeholder": "ihre@email.ch"
+        "placeholder": "ihre@email.ch",
+        "sending": "Bitte warten...",
+        "success": "Vielen Dank! Sie haben den Newsletter abonniert.",
+        "already": "Diese E-Mail-Adresse ist bereits abonniert.",
+        "invalid": "Bitte geben Sie eine gültige E-Mail-Adresse ein.",
+        "error": "Etwas ist schiefgelaufen. Bitte versuchen Sie es später erneut."
     },
     "subscribeSideBar": {
         "title": "Newsletter abonnieren",
         "description": "Neue Artikel und Veranstaltungen direkt in Ihren Posteingang. Kein Spam, nur nützliche Inhalte.",
         "button": "Abonnieren",
-        "placeholder": "ihre@email.ch"
+        "placeholder": "ihre@email.ch",
+        "sending": "Bitte warten...",
+        "success": "Vielen Dank! Sie haben abonniert.",
+        "already": "Diese E-Mail-Adresse ist bereits abonniert.",
+        "invalid": "Bitte geben Sie eine gültige E-Mail-Adresse ein.",
+        "error": "Etwas ist schiefgelaufen. Bitte versuchen Sie es später erneut."
     },
     "footer": {
         "copyright": "© 2026 Unsere Gemeinschaft · St. Gallen, Schweiz",
@@ -55,6 +65,19 @@
         "contact": "Kontaktieren Sie uns",
         "telegram": "Telegram schreiben",
         "email": "E-Mail senden"
+    },
+    "newsPage": {
+        "title": "Alle Nachrichten",
+        "allCategories": "Alle",
+        "empty": "Keine Nachrichten in dieser Kategorie",
+        "prev": "← Zurück",
+        "next": "Weiter →"
+    },
+    "sensitive": {
+        "title": "Sensibler Inhalt",
+        "message": "Dieser Artikel kann Inhalte enthalten, die nicht für alle geeignet sind. Möchten Sie fortfahren?",
+        "confirm": "Fortfahren",
+        "cancel": "Zurück"
     },
     "article": {
         "readTime": "Min Lesezeit",

@@ -1,7 +1,9 @@
 'use client';
 
+import Image from 'next/image';
 import { useTranslations } from 'next-intl';
 import { getCategoryClass } from '@/lib/category-style';
+import SensitiveLink from '@/components/SensitiveLink';
 
 interface ArticleItem {
   slug: string;
@@ -12,31 +14,36 @@ interface ArticleItem {
   readingTime: number;
   thumbnailUrl: string | null;
   locale: string;
+  sensitive?: boolean;
 }
 
 interface ArticleListProps {
   articles: ArticleItem[];
+  showLabel?: boolean;
 }
 
-export default function ArticleList({ articles }: ArticleListProps) {
+export default function ArticleList({ articles, showLabel = true }: ArticleListProps) {
   const t = useTranslations();
 
   return (
     <section>
-      <p className="section-label">{t('articles.label')}</p>
+      {showLabel && <p className="section-label">{t('articles.label')}</p>}
       <div className="articles">
         {articles.map((article) => (
-          <a
+          <SensitiveLink
             key={article.slug}
             href={`/${article.locale}/articles/${article.slug}`}
             className="article-card"
+            sensitive={article.sensitive}
           >
             <div className="article-thumb">
               {article.thumbnailUrl ? (
-                <img
+                <Image
                   src={article.thumbnailUrl}
                   alt={article.title}
-                  style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 'inherit' }}
+                  fill
+                  sizes="68px"
+                  style={{ objectFit: 'cover', borderRadius: 'inherit' }}
                 />
               ) : (
                 '📰'
@@ -54,7 +61,7 @@ export default function ArticleList({ articles }: ArticleListProps) {
                 {article.date} · {article.readingTime} {t('article.readTime')}
               </p>
             </div>
-          </a>
+          </SensitiveLink>
         ))}
       </div>
     </section>

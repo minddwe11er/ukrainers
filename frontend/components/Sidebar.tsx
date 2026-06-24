@@ -88,9 +88,9 @@ export default async function Sidebar({ locale }: SidebarProps) {
                                         {localized.title}
                                     </Link>
                                     {localized.location && (
-                                        /online|онлайн|zoom|facebook|discord|youtube/i.test(localized.location) ? (
+                                        localized.location.startsWith('-') ? (
                                             <span className="event-loc">
-                                                {localized.location}
+                                                {localized.location.slice(1).trim()}
                                             </span>
                                         ) : (
                                             <a
@@ -111,7 +111,7 @@ export default async function Sidebar({ locale }: SidebarProps) {
                                     >
                                         {t('readMore')}
                                     </Link>
-                                    {localized.location && !/online|онлайн|zoom|facebook|discord|youtube/i.test(localized.location) && (
+                                    {localized.location && !localized.location.startsWith('-') && (
                                         <a
                                             href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(localized.location)}`}
                                             target="_blank"

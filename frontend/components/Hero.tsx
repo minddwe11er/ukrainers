@@ -1,7 +1,9 @@
 'use client';
 
+import Image from 'next/image';
 import { useTranslations } from 'next-intl';
 import { getCategoryClass } from '@/lib/category-style';
+import SensitiveLink from '@/components/SensitiveLink';
 
 interface HeroProps {
   article: {
@@ -13,6 +15,7 @@ interface HeroProps {
     author: string;
     coverUrl: string | null;
     locale: string;
+    sensitive?: boolean;
   } | null;
 }
 
@@ -26,26 +29,23 @@ export default function Hero({ article }: HeroProps) {
       <p className="section-label">{t('label')}</p>
       <div className="hero">
         <div className="hero-img">
-          {article.coverUrl ? (
-            <img
+          {article.coverUrl && (
+            <Image
               src={article.coverUrl}
               alt={article.title}
-              style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 'inherit' }}
+              fill
+              sizes="(max-width: 768px) 100vw, 50vw"
+              style={{ objectFit: 'cover', borderRadius: 'inherit' }}
             />
-          ) : (
-            <div className="hero-img-placeholder">
-              <span className="placeholder-icon">🖼</span>
-              <span className="placeholder-text">Фото обкладинки</span>
-            </div>
           )}
         </div>
         <div className="hero-content">
           {article.category && (
             <span className={`badge ${getCategoryClass(article.category)}`}>{article.category}</span>
           )}
-          <a href={`/${article.locale}/articles/${article.slug}`} className="hero-title-link">
+          <SensitiveLink href={`/${article.locale}/articles/${article.slug}`} className="hero-title-link" sensitive={article.sensitive}>
             <h2 className="hero-title">{article.title}</h2>
-          </a>
+          </SensitiveLink>
           {article.description && (
             <p className="hero-excerpt">{article.description}</p>
           )}
@@ -53,9 +53,9 @@ export default function Hero({ article }: HeroProps) {
             <span>📅 <span>{article.date}</span></span>
             <span>✍️ <span>{article.author}</span></span>
           </div>
-          <a href={`/${article.locale}/articles/${article.slug}`} className="read-btn">
+          <SensitiveLink href={`/${article.locale}/articles/${article.slug}`} className="read-btn" sensitive={article.sensitive}>
             {t('readMore')}
-          </a>
+          </SensitiveLink>
         </div>
       </div>
     </section>

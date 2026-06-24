@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { redirect } from 'next/navigation';
 import Breadcrumb from '@/components/Breadcrumb';
@@ -50,9 +51,9 @@ function formatDate(dateString: string, locale: string): string {
 export default async function ArticlePage({ params }: ArticlePageProps) {
     const { locale, slug } = await params;
 
-    const [article, t] = await Promise.all([
+    const [article, tNews] = await Promise.all([
         getArticleBySlug(slug),
-        getTranslations('header'),
+        getTranslations('newsPage'),
     ]);
 
     if (!article) {
@@ -66,8 +67,8 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
     const { title, body, categories, authors } = localizeArticle(article, locale);
     const categoryNames = categories.map(c => c.name).slice(-3);
 
-    const publishedAt = article.publishedAt
-        ? formatDate(article.publishedAt, locale)
+    const publishedAt = (article.originalPublishedAt ?? article.publishedAt)
+        ? formatDate((article.originalPublishedAt ?? article.publishedAt)!, locale)
         : '';
 
     const readingTime = estimateReadingTime(body);
@@ -93,10 +94,11 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             return {
                 id: String(la.id),
                 title: la.title,
-                date: la.publishedAt ? formatDate(la.publishedAt, locale) : '',
+                date: (la.originalPublishedAt ?? la.publishedAt) ? formatDate((la.originalPublishedAt ?? la.publishedAt)!, locale) : '',
                 category: la.categories[0]?.name ?? null,
                 thumbnailUrl: getStrapiImageUrl(la.coverImage),
                 href: `/${locale}/articles/${la.slug}`,
+                sensitive: a.sensitive ?? false,
             };
         });
 
@@ -108,7 +110,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                 <article className="article-page">
                     <Breadcrumb
                         items={[
-                            { label: t('nav.news'), href: `/${locale}` },
+                            { label: tNews('title'), href: `/${locale}/articles` },
                             ...(categoryNames.length > 0
                                 ? [{ label: categoryNames[0] }]
                                 : []),
@@ -128,31 +130,17 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                         readingTime={readingTime}
                     />
 
-                    {coverUrl ? (
+                    {coverUrl && (
                         <div className="article-cover">
-                            <img
+                            <Image
                                 src={coverUrl}
                                 alt={
                                     article.coverImage?.alternativeText || title
                                 }
-                                style={{
-                                    width: '100%',
-                                    height: '100%',
-                                    objectFit: 'cover',
-                                }}
+                                fill
+                                sizes="(max-width: 768px) 100vw, 720px"
+                                style={{ objectFit: 'cover' }}
                             />
-                        </div>
-                    ) : (
-                        <div className="article-cover">
-                            <span
-                                className="placeholder-icon"
-                                style={{ fontSize: '3rem' }}
-                            >
-                                🖼
-                            </span>
-                            <span className="placeholder-text">
-                                Фото обкладинки
-                            </span>
                         </div>
                     )}
 

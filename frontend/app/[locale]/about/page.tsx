@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ArticleBody from '@/components/ArticleBody';
@@ -93,9 +94,12 @@ export default async function AboutPage({ params }: AboutPageProps) {
                                     >
                                         <div className="about-team-avatar">
                                             {avatarUrl ? (
-                                                <img
+                                                <Image
                                                     src={avatarUrl}
                                                     alt={name}
+                                                    fill
+                                                    sizes="80px"
+                                                    style={{ objectFit: 'cover' }}
                                                 />
                                             ) : (
                                                 <span>{initials}</span>

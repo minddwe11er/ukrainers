@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, FormEvent } from 'react';
 import { useTranslations } from 'next-intl';
 
 const STORAGE_KEY = 'subscribe-sidebar-hidden';
@@ -8,6 +8,8 @@ const STORAGE_KEY = 'subscribe-sidebar-hidden';
 export default function SubscribeSidebar() {
     const t = useTranslations('subscribeSideBar');
     const [hidden, setHidden] = useState(true);
+    const [email, setEmail] = useState('');
+    const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'already' | 'invalid' | 'error'>('idle');
 
     useEffect(() => {
         setHidden(localStorage.getItem(STORAGE_KEY) === '1');
@@ -19,6 +21,36 @@ export default function SubscribeSidebar() {
         localStorage.setItem(STORAGE_KEY, '1');
         setHidden(true);
     };
+
+    async function handleSubmit(e: FormEvent) {
+        e.preventDefault();
+
+        const trimmed = email.trim();
+        if (!trimmed || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
+            setStatus('invalid');
+            return;
+        }
+
+        setStatus('sending');
+
+        const form = e.target as HTMLFormElement;
+        const honeypot = (form.elements.namedItem('website') as HTMLInputElement)?.value;
+
+        const res = await fetch('/api/subscribe', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: trimmed, website: honeypot }),
+        });
+
+        if (res.ok) {
+            setStatus('success');
+            setEmail('');
+        } else if (res.status === 409) {
+            setStatus('already');
+        } else {
+            setStatus('error');
+        }
+    }
 
     return (
         <div className="subscribe-box-sidebar">
@@ -38,12 +70,36 @@ export default function SubscribeSidebar() {
                 </button>
             </div>
             <p className="sub-sidebar-desc">{t('description')}</p>
-            <input
-                type="email"
-                placeholder={t('placeholder')}
-                className="sub-sidebar-input"
-            />
-            <button className="sub-sidebar-btn">{t('button')}</button>
+            {status === 'success' ? (
+                <p className="sub-message sub-success">{t('success')}</p>
+            ) : (
+                <form onSubmit={handleSubmit} noValidate>
+                    <input
+                        name="website"
+                        tabIndex={-1}
+                        autoComplete="off"
+                        className="honeypot"
+                    />
+                    <input
+                        type="email"
+                        placeholder={t('placeholder')}
+                        className="sub-sidebar-input"
+                        value={email}
+                        onChange={e => setEmail(e.target.value)}
+                        disabled={status === 'sending'}
+                    />
+                    <button
+                        type="submit"
+                        className="sub-sidebar-btn"
+                        disabled={status === 'sending'}
+                    >
+                        {status === 'sending' ? t('sending') : t('button')}
+                    </button>
+                    {(status === 'invalid' || status === 'already' || status === 'error') && (
+                        <p className="sub-message sub-error">{t(status)}</p>
+                    )}
+                </form>
+            )}
         </div>
     );
 }

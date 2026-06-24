@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { redirect } from 'next/navigation';
 import Breadcrumb from '@/components/Breadcrumb';
@@ -46,9 +47,9 @@ function formatEventDateTime(dateString: string, locale: string): string {
 export default async function EventPage({ params }: EventPageProps) {
     const { locale, slug } = await params;
 
-    const [event, t] = await Promise.all([
+    const [event, tEvents] = await Promise.all([
         getEventBySlug(slug),
-        getTranslations('header'),
+        getTranslations('events'),
     ]);
 
     if (!event) {
@@ -60,6 +61,7 @@ export default async function EventPage({ params }: EventPageProps) {
     }
 
     const tEvent = await getTranslations('event');
+    const tNews = await getTranslations('newsPage');
 
     const { title, body, location } = localizeEvent(event, locale);
 
@@ -87,7 +89,10 @@ export default async function EventPage({ params }: EventPageProps) {
             <div className="article-layout">
                 <article className="article-page">
                     <Breadcrumb
-                        items={[{ label: t('nav.events'), href: `/${locale}` }]}
+                        items={[
+                            { label: tNews('title'), href: `/${locale}/articles` },
+                            { label: tEvents('breadcrumb') },
+                        ]}
                     />
 
                     <ArticleHeader
@@ -108,10 +113,8 @@ export default async function EventPage({ params }: EventPageProps) {
                             <div className="event-detail">
                                 <span>
                                     📍 {tEvent('location')}:{' '}
-                                    {/online|онлайн|zoom|facebook|discord|youtube/i.test(
-                                        location,
-                                    ) ? (
-                                        location
+                                    {location.startsWith('-') ? (
+                                        location.slice(1).trim()
                                     ) : (
                                         <a
                                             href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location)}`}
@@ -127,29 +130,15 @@ export default async function EventPage({ params }: EventPageProps) {
                         )}
                     </div>
 
-                    {coverUrl ? (
+                    {coverUrl && (
                         <div className="article-cover">
-                            <img
+                            <Image
                                 src={coverUrl}
                                 alt={event.coverImage?.alternativeText || title}
-                                style={{
-                                    width: '100%',
-                                    height: '100%',
-                                    objectFit: 'cover',
-                                }}
+                                fill
+                                sizes="(max-width: 768px) 100vw, 720px"
+                                style={{ objectFit: 'cover' }}
                             />
-                        </div>
-                    ) : (
-                        <div className="article-cover">
-                            <span
-                                className="placeholder-icon"
-                                style={{ fontSize: '3rem' }}
-                            >
-                                🖼
-                            </span>
-                            <span className="placeholder-text">
-                                Фото обкладинки
-                            </span>
                         </div>
                     )}
 

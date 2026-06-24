@@ -45,11 +45,12 @@ export default async function Home({ params }: HomeProps) {
               category: heroCat
                   ? localizeCategory(heroCat, locale).name
                   : HERO_CATEGORY,
-              date: heroLocalized.publishedAt
-                  ? formatDate(heroLocalized.publishedAt, locale)
+              date: (heroLocalized.originalPublishedAt ?? heroLocalized.publishedAt)
+                  ? formatDate((heroLocalized.originalPublishedAt ?? heroLocalized.publishedAt)!, locale)
                   : '',
               author: heroLocalized.authors[0]?.name ?? '',
               coverUrl: getStrapiImageUrl(heroLocalized.coverImage),
+              sensitive: heroRaw?.sensitive ?? false,
               locale,
           }
         : null;
@@ -63,9 +64,10 @@ export default async function Home({ params }: HomeProps) {
                 title: la.title,
                 description: la.descr || null,
                 category: la.categories[0]?.name ?? null,
-                date: la.publishedAt ? formatDate(la.publishedAt, locale) : '',
+                date: (la.originalPublishedAt ?? la.publishedAt) ? formatDate((la.originalPublishedAt ?? la.publishedAt)!, locale) : '',
                 readingTime: estimateReadingTime(la.body),
                 thumbnailUrl: getStrapiImageUrl(la.coverImage),
+                sensitive: a.sensitive ?? false,
                 locale,
             };
         });

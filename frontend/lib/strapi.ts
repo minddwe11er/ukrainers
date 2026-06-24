@@ -58,6 +58,7 @@ export interface StrapiArticle {
   coverImage: StrapiImage | null;
   categories: StrapiCategory[];
   authors: StrapiAuthor[];
+  sensitive: boolean;
   publishedAt: string | null;
   originalPublishedAt: string | null;
   createdAt: string;
@@ -82,6 +83,57 @@ async function fetchStrapi<T>(
   }
 
   return res.json();
+}
+
+export interface PaginatedArticles {
+  data: StrapiArticle[];
+  pagination: {
+    page: number;
+    pageSize: number;
+    pageCount: number;
+    total: number;
+  };
+}
+
+export async function getArticlesPaginated(options: {
+  page?: number;
+  pageSize?: number;
+  categorySlug?: string;
+} = {}): Promise<PaginatedArticles> {
+  const { page = 1, pageSize = 10, categorySlug } = options;
+
+  const params: Record<string, string> = {
+    'populate[categories]': 'true',
+    'populate[authors][populate]': 'avatar',
+    'populate[coverImage]': 'true',
+    'sort': 'originalPublishedAt:desc',
+    'pagination[page]': String(page),
+    'pagination[pageSize]': String(pageSize),
+    'status': 'published',
+    'filters[originalPublishedAt][$lte]': new Date().toISOString(),
+  };
+
+  if (categorySlug) {
+    params['filters[categories][slug][$eq]'] = categorySlug;
+  }
+
+  const response = await fetchStrapi<StrapiArticle[]>('/articles', params);
+
+  return {
+    data: response.data ?? [],
+    pagination: response.meta?.pagination ?? {
+      page: 1, pageSize, pageCount: 1, total: 0,
+    },
+  };
+}
+
+export async function getCategories(): Promise<StrapiCategory[]> {
+  const { data } = await fetchStrapi<StrapiCategory[]>('/categories', {
+    'sort': 'name:asc',
+    'pagination[pageSize]': '100',
+  });
+
+  return data ?? [];
 }
 
 export async function getArticleBySlug(

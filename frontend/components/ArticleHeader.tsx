@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useTranslations } from 'next-intl';
 import { getCategoryClass } from '@/lib/category-style';
 
@@ -45,7 +46,7 @@ export default function ArticleHeader({
             <div key={i} className="author-entry">
               <div className="avatar">
                 {author.avatarUrl ? (
-                  <img src={author.avatarUrl} alt={author.name} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
+                  <Image src={author.avatarUrl} alt={author.name} fill sizes="34px" style={{ objectFit: 'cover' }} />
                 ) : (
                   author.initials
                 )}
