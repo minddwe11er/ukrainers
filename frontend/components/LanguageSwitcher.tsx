@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useLocale } from 'next-intl';
 
@@ -27,7 +28,11 @@ export default function LanguageSwitcher() {
   const pathname = usePathname();
   const locale = useLocale();
 
+  const [switching, setSwitching] = useState<string | null>(null);
+
   const switchLanguage = (newLocale: string) => {
+    if (newLocale === locale) return;
+    setSwitching(newLocale);
     const newPathname = pathname.replace(`/${locale}`, `/${newLocale}`);
     router.push(newPathname);
   };
@@ -36,15 +41,17 @@ export default function LanguageSwitcher() {
     <div className="lang-switcher">
       <button
         className={`lang-btn ${locale === 'uk' ? 'active' : ''}`}
+        disabled={switching !== null}
         onClick={() => switchLanguage('uk')}
       >
-        <FlagUA /> UA
+        {switching === 'uk' ? <span className="spinner spinner-sm" /> : <><FlagUA /> UA</>}
       </button>
       <button
         className={`lang-btn ${locale === 'de' ? 'active' : ''}`}
+        disabled={switching !== null}
         onClick={() => switchLanguage('de')}
       >
-        <FlagCH /> DE
+        {switching === 'de' ? <span className="spinner spinner-sm" /> : <><FlagCH /> DE</>}
       </button>
     </div>
   );

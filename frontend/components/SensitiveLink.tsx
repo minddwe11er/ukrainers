@@ -3,6 +3,8 @@
 import { useState, useEffect, ReactNode, MouseEvent } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslations } from 'next-intl';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 interface SensitiveLinkProps {
     href: string;
@@ -13,7 +15,9 @@ interface SensitiveLinkProps {
 
 export default function SensitiveLink({ href, sensitive, className, children }: SensitiveLinkProps) {
     const t = useTranslations('sensitive');
+    const router = useRouter();
     const [showModal, setShowModal] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         if (!showModal) return;
@@ -40,9 +44,9 @@ export default function SensitiveLink({ href, sensitive, className, children }: 
 
     return (
         <>
-            <a href={href} className={className} onClick={handleClick}>
+            <Link href={href} className={className} onClick={handleClick}>
                 {children}
-            </a>
+            </Link>
             {showModal && createPortal(
                 <div className="sensitive-overlay" onClick={() => setShowModal(false)}>
                     <div className="sensitive-modal" onClick={e => e.stopPropagation()}>
@@ -55,9 +59,16 @@ export default function SensitiveLink({ href, sensitive, className, children }: 
                             >
                                 {t('cancel')}
                             </button>
-                            <a href={href} className="sensitive-btn sensitive-btn-confirm">
-                                {t('confirm')}
-                            </a>
+                            <button
+                                className="sensitive-btn sensitive-btn-confirm"
+                                disabled={loading}
+                                onClick={() => {
+                                    setLoading(true);
+                                    router.push(href);
+                                }}
+                            >
+                                {loading ? <span className="spinner spinner-sm" /> : t('confirm')}
+                            </button>
                         </div>
                     </div>
                 </div>,
