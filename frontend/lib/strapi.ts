@@ -186,6 +186,7 @@ export interface StrapiPage {
   id: number;
   documentId: string;
   title: string;
+  title_de: string | null;
   slug: string;
   body: string | null;
   body_de: string | null;
@@ -240,6 +241,26 @@ export async function getUpcomingEvents(): Promise<StrapiEvent[]> {
   });
 
   return data ?? [];
+}
+
+async function countEntries(path: string, params?: Record<string, string>): Promise<number> {
+  try {
+    const res = await fetchStrapi<unknown[]>(path, {
+      'pagination[pageSize]': '1',
+      ...params,
+    });
+    return res.meta?.pagination?.total ?? 0;
+  } catch {
+    return 0;
+  }
+}
+
+export function getEventCount(): Promise<number> {
+  return countEntries('/events', { 'status': 'published' });
+}
+
+export function getAuthorCount(): Promise<number> {
+  return countEntries('/authors');
 }
 
 export function getStrapiImageUrl(image: StrapiImage | null): string | null {

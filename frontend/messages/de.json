@@ -50,7 +50,7 @@
         "error": "Etwas ist schiefgelaufen. Bitte versuchen Sie es später erneut."
     },
     "footer": {
-        "copyright": "© 2026 Unsere Gemeinschaft · St. Gallen, Schweiz",
+        "copyright": "© 2026 разом · wir zusammen, St. Gallen, Schweiz",
         "links": {
             "contacts": "Kontakte",
             "telegram": "Telegram",
@@ -64,7 +64,12 @@
         "team": "Unser Team",
         "contact": "Kontaktieren Sie uns",
         "telegram": "Telegram schreiben",
-        "email": "E-Mail senden"
+        "email": "E-Mail senden",
+        "stats": {
+            "events": "Veranstaltungen",
+            "volunteers": "Freiwillige",
+            "years": "zusammen"
+        }
     },
     "newsPage": {
         "title": "Alle Nachrichten",

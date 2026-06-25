@@ -85,5 +85,9 @@ export function localizeEvent(event: StrapiEvent, locale: string) {
 
 export function localizePage(page: StrapiPage, locale: string) {
     const isDE = locale === 'de';
-    return { ...page, body: loc(isDE, page.body_de, page.body) };
+    return {
+        ...page,
+        title: loc(isDE, page.title_de, page.title),
+        body: loc(isDE, page.body_de, page.body),
+    };
 }

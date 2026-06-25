@@ -6,21 +6,10 @@ import Subscribe from '@/components/Subscribe';
 import Footer from '@/components/Footer';
 import { getArticles, getStrapiImageUrl } from '@/lib/strapi';
 import { localizeArticle, localizeCategory } from '@/lib/localize';
+import { formatDate, estimateReadingTime } from '@/lib/format';
 
 interface HomeProps {
     params: Promise<{ locale: string }>;
-}
-
-function formatDate(dateString: string, locale: string): string {
-    return new Date(dateString).toLocaleDateString(
-        locale === 'uk' ? 'uk-UA' : 'de-CH',
-        { day: 'numeric', month: 'long' },
-    );
-}
-
-function estimateReadingTime(text: string): number {
-    const words = text.split(/\s+/).length;
-    return Math.max(1, Math.round(words / 200));
 }
 
 const HERO_CATEGORY = 'Важливо';

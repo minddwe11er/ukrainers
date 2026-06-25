@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import Header from '@/components/Header';
 import ArticleList from '@/components/ArticleList';
 import CategoryFilter from '@/components/CategoryFilter';
@@ -11,22 +12,21 @@ import {
 } from '@/lib/strapi';
 import { localizeArticle, localizeCategory } from '@/lib/localize';
 import { getTranslations } from 'next-intl/server';
+import { formatDate, estimateReadingTime } from '@/lib/format';
 
 interface ArticlesPageProps {
     params: Promise<{ locale: string }>;
     searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
-function formatDate(dateString: string, locale: string): string {
-    return new Date(dateString).toLocaleDateString(
-        locale === 'uk' ? 'uk-UA' : 'de-CH',
-        { day: 'numeric', month: 'long' },
-    );
-}
+export async function generateMetadata(): Promise<Metadata> {
+    const t = await getTranslations('newsPage');
+    const title = t('title');
 
-function estimateReadingTime(text: string): number {
-    const words = text.split(/\s+/).length;
-    return Math.max(1, Math.round(words / 200));
+    return {
+        title,
+        openGraph: { title },
+    };
 }
 
 export default async function ArticlesPage({

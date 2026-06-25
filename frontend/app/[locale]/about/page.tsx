@@ -3,7 +3,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ArticleBody from '@/components/ArticleBody';
 import { getTranslations } from 'next-intl/server';
-import { getAuthors, getPageBySlug, getStrapiImageUrl } from '@/lib/strapi';
+import { getAuthors, getPageBySlug, getStrapiImageUrl, getEventCount, getAuthorCount } from '@/lib/strapi';
 
 interface AboutPageProps {
     params: Promise<{ locale: string }>;
@@ -12,11 +12,20 @@ interface AboutPageProps {
 export default async function AboutPage({ params }: AboutPageProps) {
     const { locale } = await params;
     const isDE = locale === 'de';
-    const [t, authors, page] = await Promise.all([
+    const [t, authors, page, eventCount, authorCount] = await Promise.all([
         getTranslations('about'),
         getAuthors(),
         getPageBySlug('about'),
+        getEventCount(),
+        getAuthorCount(),
     ]);
+
+    const foundedDate = new Date(2024, 7, 27);
+    const now = new Date();
+    const yearsTotal = (now.getTime() - foundedDate.getTime()) / (365.25 * 24 * 60 * 60 * 1000);
+    const yearsTogether = yearsTotal < 1
+        ? `<1`
+        : `${Math.floor(yearsTotal)}+`;
 
     const body = page
         ? isDE && page.body_de
@@ -136,20 +145,16 @@ export default async function AboutPage({ params }: AboutPageProps) {
 
                 <section className="about-section about-stats">
                     <div className="about-stat">
-                        <span className="about-stat-number">200+</span>
-                        <span className="about-stat-label">учасників</span>
+                        <span className="about-stat-number">{eventCount}</span>
+                        <span className="about-stat-label">{t('stats.events')}</span>
                     </div>
                     <div className="about-stat">
-                        <span className="about-stat-number">50+</span>
-                        <span className="about-stat-label">заходів</span>
+                        <span className="about-stat-number">{authorCount}</span>
+                        <span className="about-stat-label">{t('stats.volunteers')}</span>
                     </div>
                     <div className="about-stat">
-                        <span className="about-stat-number">12</span>
-                        <span className="about-stat-label">волонтерів</span>
-                    </div>
-                    <div className="about-stat">
-                        <span className="about-stat-number">2+</span>
-                        <span className="about-stat-label">роки разом</span>
+                        <span className="about-stat-number">{yearsTogether}</span>
+                        <span className="about-stat-label">{t('stats.years')}</span>
                     </div>
                 </section>
 

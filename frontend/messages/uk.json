@@ -50,7 +50,7 @@
         "error": "Щось пішло не так. Спробуйте пізніше."
     },
     "footer": {
-        "copyright": "© 2026 Наша спільнота · Санкт-Галлен, Швейцарія",
+        "copyright": "© 2026 разом · wir zusammen, Санкт Галлен, Швейцарія",
         "links": {
             "contacts": "Контакти",
             "telegram": "Telegram",
@@ -64,7 +64,12 @@
         "team": "Наша команда",
         "contact": "Зв'язатись з нами",
         "telegram": "Написати в Telegram",
-        "email": "Надіслати email"
+        "email": "Надіслати email",
+        "stats": {
+            "events": "заходів",
+            "volunteers": "волонтерів",
+            "years": "разом"
+        }
     },
     "newsPage": {
         "title": "Усі новини",

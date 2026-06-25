@@ -23,10 +23,11 @@ export default function Header() {
     }, [menuOpen]);
 
     return (
-        <header className="header">
+        <header className="site-header">
             <a href={`/${locale}`} className="logo">
-                <span className="logo-icon">📍</span>
-                {t('logo')}
+                <span className="logo__ua">разом</span>
+                <span className="logo__sep">/</span>
+                <span className="logo__de">wir zusammen</span>
             </a>
             <button
                 className="burger-btn"

@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { redirect } from 'next/navigation';
@@ -11,6 +12,7 @@ import Footer from '@/components/Footer';
 import { getTranslations } from 'next-intl/server';
 import { getEventBySlug, getStrapiImageUrl } from '@/lib/strapi';
 import { localizeEvent } from '@/lib/localize';
+import { formatDateFull as formatDate, formatEventDateTime, estimateReadingTime } from '@/lib/format';
 
 interface EventPageProps {
     params: Promise<{
@@ -19,29 +21,24 @@ interface EventPageProps {
     }>;
 }
 
-function estimateReadingTime(text: string): number {
-    const words = text.split(/\s+/).length;
-    return Math.max(1, Math.round(words / 200));
-}
+export async function generateMetadata({ params }: EventPageProps): Promise<Metadata> {
+    const { locale, slug } = await params;
+    const event = await getEventBySlug(slug);
+    if (!event) return {};
 
-function formatDate(dateString: string, locale: string): string {
-    return new Date(dateString).toLocaleDateString(
-        locale === 'uk' ? 'uk-UA' : 'de-CH',
-        { day: 'numeric', month: 'long', year: 'numeric' },
-    );
-}
+    const { title, body } = localizeEvent(event, locale);
+    const description = body.slice(0, 160).replace(/\n/g, ' ');
+    const ogImage = getStrapiImageUrl(event.coverImage);
 
-function formatEventDateTime(dateString: string, locale: string): string {
-    const date = new Date(dateString);
-    const dateFormatted = date.toLocaleDateString(
-        locale === 'uk' ? 'uk-UA' : 'de-CH',
-        { day: 'numeric', month: 'long', year: 'numeric' },
-    );
-    const timeFormatted = date.toLocaleTimeString(
-        locale === 'uk' ? 'uk-UA' : 'de-CH',
-        { hour: '2-digit', minute: '2-digit' },
-    );
-    return `${dateFormatted}, ${timeFormatted}`;
+    return {
+        title,
+        description,
+        openGraph: {
+            title,
+            description,
+            ...(ogImage ? { images: [ogImage] } : {}),
+        },
+    };
 }
 
 export default async function EventPage({ params }: EventPageProps) {

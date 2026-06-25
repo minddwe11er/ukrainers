@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { redirect } from 'next/navigation';
@@ -13,6 +14,7 @@ import Footer from '@/components/Footer';
 import { getTranslations } from 'next-intl/server';
 import { getArticleBySlug, getArticles, getStrapiImageUrl } from '@/lib/strapi';
 import { localizeArticle } from '@/lib/localize';
+import { formatDateFull as formatDate, estimateReadingTime } from '@/lib/format';
 
 interface ArticlePageProps {
     params: Promise<{
@@ -21,9 +23,23 @@ interface ArticlePageProps {
     }>;
 }
 
-function estimateReadingTime(text: string): number {
-    const words = text.split(/\s+/).length;
-    return Math.max(1, Math.round(words / 200));
+export async function generateMetadata({ params }: ArticlePageProps): Promise<Metadata> {
+    const { locale, slug } = await params;
+    const article = await getArticleBySlug(slug);
+    if (!article) return {};
+
+    const { title, descr } = localizeArticle(article, locale);
+    const ogImage = getStrapiImageUrl(article.coverImage);
+
+    return {
+        title,
+        description: descr ?? undefined,
+        openGraph: {
+            title,
+            description: descr ?? undefined,
+            ...(ogImage ? { images: [ogImage] } : {}),
+        },
+    };
 }
 
 function extractHeadings(markdown: string): { id: string; label: string }[] {
@@ -39,13 +55,6 @@ function extractHeadings(markdown: string): { id: string; label: string }[] {
         });
     }
     return headings;
-}
-
-function formatDate(dateString: string, locale: string): string {
-    return new Date(dateString).toLocaleDateString(
-        locale === 'uk' ? 'uk-UA' : 'de-CH',
-        { day: 'numeric', month: 'long', year: 'numeric' },
-    );
 }
 
 export default async function ArticlePage({ params }: ArticlePageProps) {

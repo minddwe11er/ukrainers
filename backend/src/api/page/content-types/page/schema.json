@@ -15,6 +15,10 @@
       "type": "string",
       "required": true
     },
+    "title_de": {
+      "type": "string",
+      "required": true
+    },
     "slug": {
       "type": "string",
       "unique": true
