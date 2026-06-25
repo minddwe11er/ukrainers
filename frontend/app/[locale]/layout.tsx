@@ -5,6 +5,7 @@ import { cookies } from 'next/headers';
 import '../globals.css';
 import { routing } from '../../i18n/routing';
 import { notFound } from 'next/navigation';
+import Script from 'next/script';
 import ScrollToTop from '@/components/ScrollToTop';
 
 export const metadata: Metadata = {
@@ -36,7 +37,14 @@ export default async function LocaleLayout({
 
     return (
         <html lang={locale} data-theme={theme === 'dark' ? 'dark' : undefined} suppressHydrationWarning>
-            <head />
+            <head>
+                <Script
+                    defer
+                    src="https://razom-statistics.up.railway.app/script.js"
+                    data-website-id="21107f0c-78ee-4f68-bc39-aa971b1db1ca"
+                    strategy="afterInteractive"
+                />
+            </head>
             <body>
                 <NextIntlClientProvider messages={messages}>
                     {children}
