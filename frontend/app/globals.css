@@ -1105,6 +1105,19 @@ a.event-loc:hover {
     border-color: #c8c4bc;
 }
 
+.link-loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.link-spinner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 4px 0;
+}
+
 .related-thumb {
     width: 52px;
     height: 46px;

@@ -37,15 +37,19 @@ export default function SensitiveLink({ href, sensitive, className, children }: 
     }, [showModal]);
 
     function handleClick(e: MouseEvent) {
-        if (!sensitive) return;
         e.preventDefault();
-        setShowModal(true);
+        if (sensitive) {
+            setShowModal(true);
+        } else {
+            setLoading(true);
+            router.push(href);
+        }
     }
 
     return (
         <>
-            <Link href={href} className={className} onClick={handleClick}>
-                {children}
+            <Link href={href} className={`${className ?? ''} ${loading ? 'link-loading' : ''}`} onClick={handleClick}>
+                {loading ? <span className="link-spinner"><span className="spinner spinner-sm" /></span> : children}
             </Link>
             {showModal && createPortal(
                 <div className="sensitive-overlay" onClick={() => setShowModal(false)}>
