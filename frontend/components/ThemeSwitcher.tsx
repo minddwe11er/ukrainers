@@ -40,6 +40,7 @@ export default function ThemeSwitcher() {
     const next = isDark ? 'light' : 'dark';
     document.documentElement.setAttribute('data-theme', next);
     localStorage.setItem(STORAGE_KEY, next);
+    document.cookie = `theme=${next};path=/;max-age=31536000`;
   };
 
   return (
