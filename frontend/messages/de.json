@@ -13,7 +13,8 @@
         "readMore": "Weiterlesen →"
     },
     "articles": {
-        "label": "Aktuelle Nachrichten"
+        "label": "Aktuelle Nachrichten",
+        "filterToggle": "Filter"
     },
     "events": {
         "breadcrumb": "Veranstaltungen",
@@ -74,7 +75,8 @@
     "newsPage": {
         "title": "Alle Nachrichten",
         "allCategories": "Alle",
-        "empty": "Keine Nachrichten in dieser Kategorie",
+        "searchPlaceholder": "Nachrichten suchen…",
+        "empty": "Nichts gefunden",
         "prev": "← Zurück",
         "next": "Weiter →"
     },

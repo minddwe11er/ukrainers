@@ -99,8 +99,10 @@ export async function getArticlesPaginated(options: {
   page?: number;
   pageSize?: number;
   categorySlug?: string;
+  excludeSlugs?: string[];
+  search?: string;
 } = {}): Promise<PaginatedArticles> {
-  const { page = 1, pageSize = 10, categorySlug } = options;
+  const { page = 1, pageSize = 10, categorySlug, excludeSlugs = [], search } = options;
 
   const params: Record<string, string> = {
     'populate[categories]': 'true',
@@ -115,6 +117,15 @@ export async function getArticlesPaginated(options: {
 
   if (categorySlug) {
     params['filters[categories][slug][$eq]'] = categorySlug;
+  }
+
+  excludeSlugs.forEach((slug, i) => {
+    params[`filters[categories][slug][$notIn][${i}]`] = slug;
+  });
+
+  if (search) {
+    params['filters[$or][0][title][$containsi]'] = search;
+    params['filters[$or][1][descr][$containsi]'] = search;
   }
 
   const response = await fetchStrapi<StrapiArticle[]>('/articles', params);
@@ -152,8 +163,9 @@ export async function getArticleBySlug(
 
 export async function getArticles(
   pageSize: number = 10,
+  excludeSlugs: string[] = [],
 ): Promise<StrapiArticle[]> {
-  const { data } = await fetchStrapi<StrapiArticle[]>('/articles', {
+  const params: Record<string, string> = {
     'populate[categories]': 'true',
     'populate[authors][populate]': 'avatar',
     'populate[coverImage]': 'true',
@@ -161,7 +173,13 @@ export async function getArticles(
     'pagination[pageSize]': String(pageSize),
     'status': 'published',
     'filters[originalPublishedAt][$lte]': new Date().toISOString(),
+  };
+
+  excludeSlugs.forEach((slug, i) => {
+    params[`filters[categories][slug][$notIn][${i}]`] = slug;
   });
+
+  const { data } = await fetchStrapi<StrapiArticle[]>('/articles', params);
 
   return data ?? [];
 }

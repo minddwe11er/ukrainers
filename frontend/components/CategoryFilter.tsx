@@ -3,20 +3,46 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { getCategoryClass } from '@/lib/category-style';
+const COOKIE_NAME = 'excluded-categories';
+const COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
 
-interface CategoryFilterProps {
+function saveExcludedSlugs(excluded: string[]) {
+  document.cookie = `${COOKIE_NAME}=${excluded.join(',')};path=/;max-age=${COOKIE_MAX_AGE};SameSite=Lax`;
+}
+
+interface CategoryFilterSelectProps {
+  mode: 'select';
   categories: { slug: string; name: string }[];
   currentSlug: string | undefined;
   basePath: string;
   allLabel: string;
+  searchQuery?: string;
 }
 
-export default function CategoryFilter({
+interface CategoryFilterExcludeProps {
+  mode: 'exclude';
+  categories: { slug: string; name: string }[];
+  excludedSlugs: string[];
+  basePath: string;
+  allLabel: string;
+}
+
+type CategoryFilterProps = CategoryFilterSelectProps | CategoryFilterExcludeProps;
+
+export default function CategoryFilter(props: CategoryFilterProps) {
+  if (props.mode === 'select') {
+    return <SelectFilter {...props} />;
+  }
+  return <ExcludeFilter {...props} />;
+}
+
+function SelectFilter({
   categories,
   currentSlug,
   basePath,
   allLabel,
-}: CategoryFilterProps) {
+  searchQuery,
+}: CategoryFilterSelectProps) {
   const router = useRouter();
   const [loadingSlug, setLoadingSlug] = useState<string | false>(false);
 
@@ -24,38 +50,103 @@ export default function CategoryFilter({
     setLoadingSlug(false);
   }, [currentSlug]);
 
-  function handleClick(e: React.MouseEvent, href: string, slug: string) {
-    e.preventDefault();
-    const current = currentSlug ?? '__all__';
-    if (slug === current) return;
-    setLoadingSlug(slug);
-    router.push(href);
+  function buildHref(slug: string | undefined): string {
+    const params = new URLSearchParams();
+    if (slug) params.set('category', slug);
+    if (searchQuery) params.set('search', searchQuery);
+    const qs = params.toString();
+    return qs ? `${basePath}?${qs}` : basePath;
   }
 
-  const allLoading = loadingSlug === '__all__';
+  function handleClick(slug: string | undefined) {
+    const current = currentSlug ?? '__all__';
+    const target = slug ?? '__all__';
+    if (target === current) return;
+    setLoadingSlug(target);
+    router.push(buildHref(slug));
+  }
 
   return (
     <div className="category-filter">
-      <a
-        href={basePath}
+      <button
         className={`category-filter-btn ${!currentSlug ? 'active' : ''}`}
-        onClick={e => handleClick(e, basePath, '__all__')}
+        onClick={() => handleClick(undefined)}
       >
-        {allLoading ? <span className="spinner spinner-sm" /> : allLabel}
-      </a>
+        {loadingSlug === '__all__' ? <span className="spinner spinner-sm" /> : allLabel}
+      </button>
       {categories.map(cat => {
-        const href = `${basePath}?category=${cat.slug}`;
         const isActive = currentSlug === cat.slug;
         const isLoading = loadingSlug === cat.slug;
         return (
-          <a
+          <button
             key={cat.slug}
-            href={href}
-            className={`category-filter-btn ${isActive ? 'active' : ''} ${getCategoryClass(cat.name)}`}
-            onClick={e => handleClick(e, href, cat.slug)}
+            className={`category-filter-btn ${getCategoryClass(cat.name)} ${isActive ? 'active' : ''}`}
+            onClick={() => handleClick(cat.slug)}
           >
             {isLoading ? <span className="spinner spinner-sm" /> : cat.name}
-          </a>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function ExcludeFilter({
+  categories,
+  excludedSlugs,
+  basePath,
+  allLabel,
+}: CategoryFilterExcludeProps) {
+  const router = useRouter();
+  const [loadingSlug, setLoadingSlug] = useState<string | false>(false);
+
+  const excludeKey = excludedSlugs.join(',');
+  useEffect(() => {
+    setLoadingSlug(false);
+  }, [excludeKey]);
+
+  function buildHref(newExcluded: string[]): string {
+    const params = new URLSearchParams();
+    if (newExcluded.length > 0) params.set('exclude', newExcluded.join(','));
+    const qs = params.toString();
+    return qs ? `${basePath}?${qs}` : basePath;
+  }
+
+  function handleToggle(slug: string) {
+    setLoadingSlug(slug);
+    const newExcluded = excludedSlugs.includes(slug)
+      ? excludedSlugs.filter(s => s !== slug)
+      : [...excludedSlugs, slug];
+    saveExcludedSlugs(newExcluded);
+    router.push(buildHref(newExcluded), { scroll: false });
+  }
+
+  function handleResetAll() {
+    if (excludedSlugs.length === 0) return;
+    setLoadingSlug('__all__');
+    saveExcludedSlugs([]);
+    router.push(buildHref([]), { scroll: false });
+  }
+
+  return (
+    <div className="category-filter">
+      <button
+        className={`category-filter-btn ${excludedSlugs.length === 0 ? 'active' : ''}`}
+        onClick={handleResetAll}
+      >
+        {loadingSlug === '__all__' ? <span className="spinner spinner-sm" /> : allLabel}
+      </button>
+      {categories.map(cat => {
+        const isExcluded = excludedSlugs.includes(cat.slug);
+        const isLoading = loadingSlug === cat.slug;
+        return (
+          <button
+            key={cat.slug}
+            className={`category-filter-btn ${getCategoryClass(cat.name)} ${isExcluded ? 'excluded' : ''}`}
+            onClick={() => handleToggle(cat.slug)}
+          >
+            {isLoading ? <span className="spinner spinner-sm" /> : cat.name}
+          </button>
         );
       })}
     </div>

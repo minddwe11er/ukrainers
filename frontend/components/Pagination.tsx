@@ -2,7 +2,8 @@ interface PaginationProps {
   currentPage: number;
   pageCount: number;
   basePath: string;
-  currentCategory: string | undefined;
+  currentCategory?: string;
+  searchQuery?: string;
   prevLabel: string;
   nextLabel: string;
 }
@@ -12,6 +13,7 @@ export default function Pagination({
   pageCount,
   basePath,
   currentCategory,
+  searchQuery,
   prevLabel,
   nextLabel,
 }: PaginationProps) {
@@ -21,6 +23,7 @@ export default function Pagination({
     const params = new URLSearchParams();
     if (page > 1) params.set('page', String(page));
     if (currentCategory) params.set('category', currentCategory);
+    if (searchQuery) params.set('search', searchQuery);
     const qs = params.toString();
     return qs ? `${basePath}?${qs}` : basePath;
   }

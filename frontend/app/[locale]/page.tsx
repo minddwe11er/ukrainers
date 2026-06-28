@@ -1,22 +1,36 @@
 import Header from '@/components/Header';
 import Hero from '@/components/Hero';
 import ArticleList from '@/components/ArticleList';
+import CategoryFilter from '@/components/CategoryFilter';
 import Sidebar from '@/components/Sidebar';
 import Subscribe from '@/components/Subscribe';
 import Footer from '@/components/Footer';
-import { getArticles, getStrapiImageUrl } from '@/lib/strapi';
+import { getArticles, getCategories, getStrapiImageUrl } from '@/lib/strapi';
 import { localizeArticle, localizeCategory } from '@/lib/localize';
 import { formatDate, estimateReadingTime } from '@/lib/format';
+import { getExcludedSlugs } from '@/lib/excluded-categories';
+import { getTranslations } from 'next-intl/server';
 
 interface HomeProps {
     params: Promise<{ locale: string }>;
+    searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
 const HERO_CATEGORY = 'Важливо';
 
-export default async function Home({ params }: HomeProps) {
+export default async function Home({ params, searchParams }: HomeProps) {
     const { locale } = await params;
-    const allArticles = await getArticles(6);
+    const sp = await searchParams;
+    const t = await getTranslations('newsPage');
+
+    const excludedSlugs = await getExcludedSlugs(
+        typeof sp.exclude === 'string' ? sp.exclude : undefined,
+    );
+
+    const [allArticles, allCategories] = await Promise.all([
+        getArticles(6, excludedSlugs),
+        getCategories(),
+    ]);
 
     const visibleArticles = allArticles.filter(a => locale !== 'de' || a.body_de);
 
@@ -61,12 +75,27 @@ export default async function Home({ params }: HomeProps) {
             };
         });
 
+    const localizedCategories = allCategories.map(c =>
+        localizeCategory(c, locale),
+    );
+    const basePath = `/${locale}`;
+
     return (
         <div className="portal">
             <Header />
             <Hero article={heroArticle} />
             <div className="main">
-                <ArticleList articles={articles} />
+                <div className="main-content">
+                    <ArticleList articles={articles} filterSlot={
+                        <CategoryFilter
+                            mode="exclude"
+                            categories={localizedCategories}
+                            excludedSlugs={excludedSlugs}
+                            basePath={basePath}
+                            allLabel={t('allCategories')}
+                        />
+                    } />
+                </div>
                 <Sidebar locale={locale} />
             </div>
             <Subscribe />

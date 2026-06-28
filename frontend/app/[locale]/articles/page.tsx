@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Header from '@/components/Header';
 import ArticleList from '@/components/ArticleList';
 import CategoryFilter from '@/components/CategoryFilter';
+import SearchInput from '@/components/SearchInput';
 import Pagination from '@/components/Pagination';
 import Subscribe from '@/components/Subscribe';
 import Footer from '@/components/Footer';
@@ -40,6 +41,8 @@ export default async function ArticlesPage({
     const currentPage = Math.max(1, Number(sp.page) || 1);
     const currentCategory =
         typeof sp.category === 'string' ? sp.category : undefined;
+    const searchQuery =
+        typeof sp.search === 'string' ? sp.search.trim() : '';
 
     const [{ data: rawArticles, pagination }, allCategories] =
         await Promise.all([
@@ -47,6 +50,7 @@ export default async function ArticlesPage({
                 page: currentPage,
                 pageSize: 10,
                 categorySlug: currentCategory,
+                search: searchQuery || undefined,
             }),
             getCategories(),
         ]);
@@ -87,11 +91,20 @@ export default async function ArticlesPage({
             <div className="news-listing">
                 <h1 className="news-listing-title">{t('title')}</h1>
 
+                <SearchInput
+                    basePath={basePath}
+                    currentQuery={searchQuery}
+                    currentCategory={currentCategory}
+                    placeholder={t('searchPlaceholder')}
+                />
+
                 <CategoryFilter
+                    mode="select"
                     categories={localizedCategories}
                     currentSlug={currentCategory}
                     basePath={basePath}
                     allLabel={t('allCategories')}
+                    searchQuery={searchQuery || undefined}
                 />
 
                 {articles.length > 0 ? (
@@ -105,6 +118,7 @@ export default async function ArticlesPage({
                     pageCount={pagination.pageCount}
                     basePath={basePath}
                     currentCategory={currentCategory}
+                    searchQuery={searchQuery || undefined}
                     prevLabel={t('prev')}
                     nextLabel={t('next')}
                 />
