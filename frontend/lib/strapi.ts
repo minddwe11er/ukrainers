@@ -59,6 +59,7 @@ export interface StrapiArticle {
   categories: StrapiCategory[];
   authors: StrapiAuthor[];
   sensitive: boolean;
+  hero: boolean;
   publishedAt: string | null;
   originalPublishedAt: string | null;
   createdAt: string;
@@ -182,6 +183,25 @@ export async function getArticles(
   const { data } = await fetchStrapi<StrapiArticle[]>('/articles', params);
 
   return data ?? [];
+}
+
+export async function getHeroArticle(): Promise<StrapiArticle | null> {
+  const now = new Date();
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+
+  const { data } = await fetchStrapi<StrapiArticle[]>('/articles', {
+    'filters[hero][$eq]': 'true',
+    'filters[originalPublishedAt][$gte]': startOfMonth.toISOString(),
+    'filters[originalPublishedAt][$lte]': now.toISOString(),
+    'populate[categories]': 'true',
+    'populate[authors][populate]': 'avatar',
+    'populate[coverImage]': 'true',
+    'sort': 'originalPublishedAt:desc',
+    'pagination[pageSize]': '1',
+    'status': 'published',
+  });
+
+  return data?.[0] ?? null;
 }
 
 export interface StrapiEvent {

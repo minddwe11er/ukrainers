@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 
 const STORAGE_KEY = 'theme';
 
+const THEME_COLOR = { light: '#2c5aa0', dark: '#5b8fd4' };
+
 function SunIcon() {
   return (
     <svg className="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -41,6 +43,7 @@ export default function ThemeSwitcher() {
     document.documentElement.setAttribute('data-theme', next);
     localStorage.setItem(STORAGE_KEY, next);
     document.cookie = `theme=${next};path=/;max-age=31536000`;
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', THEME_COLOR[next]);
   };
 
   return (

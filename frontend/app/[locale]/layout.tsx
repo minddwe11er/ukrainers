@@ -34,10 +34,12 @@ export default async function LocaleLayout({
     const messages = await getMessages();
     const cookieStore = await cookies();
     const theme = cookieStore.get('theme')?.value;
+    const isDark = theme === 'dark';
 
     return (
-        <html lang={locale} data-theme={theme === 'dark' ? 'dark' : undefined} suppressHydrationWarning>
+        <html lang={locale} data-theme={isDark ? 'dark' : undefined} suppressHydrationWarning>
             <head>
+                <meta name="theme-color" content={isDark ? '#5b8fd4' : '#2c5aa0'} />
                 <Script
                     defer
                     src="https://razom-statistics.up.railway.app/script.js"

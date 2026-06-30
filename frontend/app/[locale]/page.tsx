@@ -5,7 +5,7 @@ import CategoryFilter from '@/components/CategoryFilter';
 import Sidebar from '@/components/Sidebar';
 import Subscribe from '@/components/Subscribe';
 import Footer from '@/components/Footer';
-import { getArticles, getCategories, getStrapiImageUrl } from '@/lib/strapi';
+import { getArticles, getHeroArticle, getCategories, getStrapiImageUrl } from '@/lib/strapi';
 import { localizeArticle, localizeCategory } from '@/lib/localize';
 import { formatDate, estimateReadingTime } from '@/lib/format';
 import { getExcludedSlugs } from '@/lib/excluded-categories';
@@ -16,8 +16,6 @@ interface HomeProps {
     searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
-const HERO_CATEGORY = 'Важливо';
-
 export default async function Home({ params, searchParams }: HomeProps) {
     const { locale } = await params;
     const sp = await searchParams;
@@ -27,40 +25,37 @@ export default async function Home({ params, searchParams }: HomeProps) {
         typeof sp.exclude === 'string' ? sp.exclude : undefined,
     );
 
-    const [allArticles, allCategories] = await Promise.all([
-        getArticles(6, excludedSlugs),
+    const [heroRaw, allArticles, allCategories] = await Promise.all([
+        getHeroArticle(),
+        getArticles(7, excludedSlugs),
         getCategories(),
     ]);
 
-    const visibleArticles = allArticles.filter(a => locale !== 'de' || a.body_de);
-
-    const heroRaw = visibleArticles.find(a =>
-        (a.categories ?? []).some(c => c.name === HERO_CATEGORY),
-    );
-    const heroLocalized = heroRaw ? localizeArticle(heroRaw, locale) : null;
-    const heroCat = (heroRaw?.categories ?? []).find(c => c.name === HERO_CATEGORY);
+    const heroFiltered = heroRaw && (locale !== 'de' || heroRaw.body_de) ? heroRaw : null;
+    const heroLocalized = heroFiltered ? localizeArticle(heroFiltered, locale) : null;
+    const heroCat = heroFiltered?.categories?.[0] ?? null;
 
     const heroArticle = heroLocalized
         ? {
               slug: heroLocalized.slug,
               title: heroLocalized.title,
               description: heroLocalized.descr || null,
-              category: heroCat
-                  ? localizeCategory(heroCat, locale).name
-                  : HERO_CATEGORY,
+              category: heroCat ? localizeCategory(heroCat, locale).name : null,
               date: (heroLocalized.originalPublishedAt ?? heroLocalized.publishedAt)
                   ? formatDate((heroLocalized.originalPublishedAt ?? heroLocalized.publishedAt)!, locale)
                   : '',
               author: heroLocalized.authors[0]?.name ?? '',
               coverUrl: getStrapiImageUrl(heroLocalized.coverImage),
-              sensitive: heroRaw?.sensitive ?? false,
+              sensitive: heroFiltered.sensitive,
               locale,
           }
         : null;
 
-    const articles = visibleArticles
-        .filter(a => a.slug !== heroRaw?.slug)
-        .map(a => {
+    const visibleArticles = allArticles.filter(a =>
+        (locale !== 'de' || a.body_de) && a.slug !== heroRaw?.slug,
+    );
+
+    const articles = visibleArticles.slice(0, 6).map(a => {
             const la = localizeArticle(a, locale);
             return {
                 slug: la.slug,
