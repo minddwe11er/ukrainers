@@ -46,7 +46,7 @@ export default async function Home({ params, searchParams }: HomeProps) {
                   : '',
               author: heroLocalized.authors[0]?.name ?? '',
               coverUrl: getStrapiImageUrl(heroLocalized.coverImage),
-              sensitive: heroFiltered.sensitive,
+              sensitive: heroFiltered!.sensitive,
               locale,
           }
         : null;
