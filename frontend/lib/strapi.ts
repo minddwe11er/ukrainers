@@ -186,22 +186,26 @@ export async function getArticles(
 }
 
 export async function getHeroArticle(): Promise<StrapiArticle | null> {
-  const now = new Date();
-  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+  try {
+    const now = new Date();
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 
-  const { data } = await fetchStrapi<StrapiArticle[]>('/articles', {
-    'filters[hero][$eq]': 'true',
-    'filters[originalPublishedAt][$gte]': startOfMonth.toISOString(),
-    'filters[originalPublishedAt][$lte]': now.toISOString(),
-    'populate[categories]': 'true',
-    'populate[authors][populate]': 'avatar',
-    'populate[coverImage]': 'true',
-    'sort': 'originalPublishedAt:desc',
-    'pagination[pageSize]': '1',
-    'status': 'published',
-  });
+    const { data } = await fetchStrapi<StrapiArticle[]>('/articles', {
+      'filters[hero][$eq]': 'true',
+      'filters[originalPublishedAt][$gte]': startOfMonth.toISOString(),
+      'filters[originalPublishedAt][$lte]': now.toISOString(),
+      'populate[categories]': 'true',
+      'populate[authors][populate]': 'avatar',
+      'populate[coverImage]': 'true',
+      'sort': 'originalPublishedAt:desc',
+      'pagination[pageSize]': '1',
+      'status': 'published',
+    });
 
-  return data?.[0] ?? null;
+    return data?.[0] ?? null;
+  } catch {
+    return null;
+  }
 }
 
 export interface StrapiEvent {

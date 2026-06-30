@@ -59,6 +59,9 @@
     "sensitive": {
       "type": "boolean"
     },
+    "hero": {
+      "type": "boolean"
+    },
     "originalPublishedAt": {
       "type": "datetime"
     }
