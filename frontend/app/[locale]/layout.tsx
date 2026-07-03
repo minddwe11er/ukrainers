@@ -9,7 +9,7 @@ import Script from 'next/script';
 import ScrollToTop from '@/components/ScrollToTop';
 
 export const metadata: Metadata = {
-    title: 'разом / wir zusammen — новини й Швейцарія',
+    title: 'ми разом / wir zusammen — новини й Швейцарія',
     description:
         'Новини й інформація для української спільноти в районі Санкт-Галлена, Швейцарія',
 };
@@ -37,9 +37,16 @@ export default async function LocaleLayout({
     const isDark = theme === 'dark';
 
     return (
-        <html lang={locale} data-theme={isDark ? 'dark' : undefined} suppressHydrationWarning>
+        <html
+            lang={locale}
+            data-theme={isDark ? 'dark' : undefined}
+            suppressHydrationWarning
+        >
             <head>
-                <meta name="theme-color" content={isDark ? '#5b8fd4' : '#2c5aa0'} />
+                <meta
+                    name="theme-color"
+                    content={isDark ? '#5b8fd4' : '#2c5aa0'}
+                />
                 <Script
                     defer
                     src="https://razom-statistics.up.railway.app/script.js"

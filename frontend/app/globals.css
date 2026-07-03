@@ -377,14 +377,21 @@ a {
     border-radius: var(--radius-lg);
     cursor: pointer;
     transition:
-        border-color 0.15s,
-        box-shadow 0.15s;
+        background 0.15s,
+        border-color 0.15s;
     box-shadow: var(--shadow-sm);
 }
 
-.article-card:hover {
-    border-color: #c8c4bc;
-    box-shadow: var(--shadow-md);
+@media (hover: hover) {
+    .article-card:hover {
+        background: #eef2fa;
+        border-color: #d0d8ee;
+    }
+
+    [data-theme='dark'] .article-card:hover {
+        background: #1c2840;
+        border-color: #2a3a52;
+    }
 }
 
 .article-thumb {
