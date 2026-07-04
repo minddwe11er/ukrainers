@@ -63,10 +63,10 @@ export default async function AboutPage({ params }: AboutPageProps) {
     }
 
     return (
-        <div className="portal">
+        <>
             <Header />
-
-            <div className="about-page">
+            <div className="portal portal-wide">
+                <div className="about-page">
                 <div className="about-hero">
                     <h1 className="about-title">{t('title')}</h1>
                     <p className="about-subtitle">{t('subtitle')}</p>
@@ -177,9 +177,10 @@ export default async function AboutPage({ params }: AboutPageProps) {
                         </a>
                     </div>
                 </section>
-            </div>
+                </div>
 
-            <Footer />
-        </div>
+                <Footer />
+            </div>
+        </>
     );
 }

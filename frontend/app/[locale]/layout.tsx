@@ -9,7 +9,7 @@ import Script from 'next/script';
 import ScrollToTop from '@/components/ScrollToTop';
 
 export const metadata: Metadata = {
-    title: 'ми разом / wir zusammen — новини й Швейцарія',
+    title: 'разом / wir zusammen — новини й Швейцарія',
     description:
         'Новини й інформація для української спільноти в районі Санкт-Галлена, Швейцарія',
 };

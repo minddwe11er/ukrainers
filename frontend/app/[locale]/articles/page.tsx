@@ -86,9 +86,10 @@ export default async function ArticlesPage({
     const basePath = `/${locale}/articles`;
 
     return (
-        <div className="portal">
+        <>
             <Header />
-            <div className="news-listing">
+            <div className="portal">
+                <div className="news-listing">
                 <h1 className="news-listing-title">{t('title')}</h1>
 
                 <SearchInput
@@ -122,9 +123,10 @@ export default async function ArticlesPage({
                     prevLabel={t('prev')}
                     nextLabel={t('next')}
                 />
+                </div>
+                <Subscribe />
+                <Footer />
             </div>
-            <Subscribe />
-            <Footer />
-        </div>
+        </>
     );
 }

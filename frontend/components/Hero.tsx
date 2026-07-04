@@ -26,7 +26,6 @@ export default function Hero({ article }: HeroProps) {
 
   return (
     <section className="hero-section">
-      <p className="section-label">{t('label')}</p>
       <div className="hero">
         <div className="hero-img">
           {article.coverUrl && (
@@ -34,12 +33,13 @@ export default function Hero({ article }: HeroProps) {
               src={article.coverUrl}
               alt={article.title}
               fill
-              sizes="(max-width: 768px) 100vw, 50vw"
+              sizes="(max-width: 768px) 100vw, 60vw"
               style={{ objectFit: 'cover', borderRadius: 'inherit' }}
             />
           )}
         </div>
         <div className="hero-content">
+          <p className="kicker">{t('label')}</p>
           {article.category && (
             <span className={`badge ${getCategoryClass(article.category)}`}>{article.category}</span>
           )}

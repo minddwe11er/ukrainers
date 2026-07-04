@@ -1,5 +1,7 @@
 import Header from '@/components/Header';
 import Hero from '@/components/Hero';
+import FeedGrid from '@/components/FeedGrid';
+import NewsCards from '@/components/NewsCards';
 import ArticleList from '@/components/ArticleList';
 import CategoryFilter from '@/components/CategoryFilter';
 import Sidebar from '@/components/Sidebar';
@@ -27,7 +29,7 @@ export default async function Home({ params, searchParams }: HomeProps) {
 
     const [heroRaw, allArticles, allCategories] = await Promise.all([
         getHeroArticle(),
-        getArticles(7, excludedSlugs),
+        getArticles(8, excludedSlugs),
         getCategories(),
     ]);
 
@@ -51,11 +53,22 @@ export default async function Home({ params, searchParams }: HomeProps) {
           }
         : null;
 
-    const visibleArticles = allArticles.filter(a =>
-        (locale !== 'de' || a.body_de) && a.slug !== heroRaw?.slug,
-    );
+    const heroSlug = heroRaw?.slug ?? null;
 
-    const articles = visibleArticles.slice(0, 6).map(a => {
+    // walk raw fetch order and track exactly how many items were consumed
+    // to gather the first 7 visible ones, so "show more" can resume at the
+    // right offset regardless of whether hero/locale filtering skipped any
+    const visibleArticles: typeof allArticles = [];
+    let rawConsumed = 0;
+    for (const a of allArticles) {
+        rawConsumed++;
+        if ((locale !== 'de' || a.body_de) && a.slug !== heroSlug) {
+            visibleArticles.push(a);
+        }
+        if (visibleArticles.length >= 7) break;
+    }
+
+    const articles = visibleArticles.slice(0, 7).map(a => {
             const la = localizeArticle(a, locale);
             return {
                 slug: la.slug,
@@ -76,25 +89,39 @@ export default async function Home({ params, searchParams }: HomeProps) {
     const basePath = `/${locale}`;
 
     return (
-        <div className="portal">
+        <>
             <Header />
             <Hero article={heroArticle} />
-            <div className="main">
-                <div className="main-content">
-                    <ArticleList articles={articles} filterSlot={
-                        <CategoryFilter
-                            mode="exclude"
-                            categories={localizedCategories}
-                            excludedSlugs={excludedSlugs}
-                            basePath={basePath}
-                            allLabel={t('allCategories')}
-                        />
-                    } />
+            <div className="portal portal-home">
+                <FeedGrid
+                    lead={articles[0]}
+                    stack={articles.slice(1, 4)}
+                    eventsSlot={<Sidebar locale={locale} variant="feed" />}
+                />
+                <NewsCards
+                    initialArticles={articles.slice(4, 7)}
+                    initialOffset={rawConsumed}
+                    locale={locale}
+                    heroSlug={heroSlug}
+                    excludedCategorySlugs={excludedSlugs}
+                />
+                <div className="main">
+                    <div className="main-content">
+                        <ArticleList articles={articles} filterSlot={
+                            <CategoryFilter
+                                mode="exclude"
+                                categories={localizedCategories}
+                                excludedSlugs={excludedSlugs}
+                                basePath={basePath}
+                                allLabel={t('allCategories')}
+                            />
+                        } />
+                    </div>
+                    <Sidebar locale={locale} />
                 </div>
-                <Sidebar locale={locale} />
+                <Subscribe />
+                <Footer />
             </div>
-            <Subscribe />
-            <Footer />
-        </div>
+        </>
     );
 }

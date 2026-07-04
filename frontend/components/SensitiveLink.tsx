@@ -24,15 +24,21 @@ export default function SensitiveLink({ href, sensitive, className, children }: 
 
         const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
         const portal = document.querySelector('.portal') as HTMLElement | null;
+        const hero = document.querySelector('.hero-section') as HTMLElement | null;
+        const header = document.querySelector('.site-header') as HTMLElement | null;
 
         document.body.style.overflow = 'hidden';
         document.body.style.paddingRight = `${scrollbarWidth}px`;
         if (portal) portal.style.filter = 'blur(4px)';
+        if (hero) hero.style.filter = 'blur(4px)';
+        if (header) header.style.filter = 'blur(4px)';
 
         return () => {
             document.body.style.overflow = '';
             document.body.style.paddingRight = '';
             if (portal) portal.style.filter = '';
+            if (hero) hero.style.filter = '';
+            if (header) header.style.filter = '';
         };
     }, [showModal]);
 

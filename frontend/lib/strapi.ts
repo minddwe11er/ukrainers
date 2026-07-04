@@ -185,6 +185,31 @@ export async function getArticles(
   return data ?? [];
 }
 
+export async function getArticlesOffset(
+  offset: number,
+  limit: number,
+  excludeCategorySlugs: string[] = [],
+): Promise<StrapiArticle[]> {
+  const params: Record<string, string> = {
+    'populate[categories]': 'true',
+    'populate[authors][populate]': 'avatar',
+    'populate[coverImage]': 'true',
+    'sort': 'originalPublishedAt:desc',
+    'pagination[start]': String(offset),
+    'pagination[limit]': String(limit),
+    'status': 'published',
+    'filters[originalPublishedAt][$lte]': new Date().toISOString(),
+  };
+
+  excludeCategorySlugs.forEach((slug, i) => {
+    params[`filters[categories][slug][$notIn][${i}]`] = slug;
+  });
+
+  const { data } = await fetchStrapi<StrapiArticle[]>('/articles', params);
+
+  return data ?? [];
+}
+
 export async function getHeroArticle(): Promise<StrapiArticle | null> {
   try {
     const now = new Date();

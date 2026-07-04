@@ -31,20 +31,21 @@ export default async function DynamicPage({ params }: PageProps) {
   }
 
   return (
-    <div className="portal">
+    <>
       <Header />
+      <div className="portal portal-wide">
+        <div className="about-page">
+          <div className="about-hero">
+            <h1 className="about-title">{title}</h1>
+          </div>
 
-      <div className="about-page">
-        <div className="about-hero">
-          <h1 className="about-title">{title}</h1>
+          <section className="about-section">
+            <ArticleBody content={body} />
+          </section>
         </div>
 
-        <section className="about-section">
-          <ArticleBody content={body} />
-        </section>
+        <Footer />
       </div>
-
-      <Footer />
-    </div>
+    </>
   );
 }

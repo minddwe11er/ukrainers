@@ -80,10 +80,10 @@ export default async function EventPage({ params }: EventPageProps) {
     ];
 
     return (
-        <div className="portal">
+        <>
             <Header />
-
-            <div className="article-layout">
+            <div className="portal portal-wide">
+                <div className="article-layout">
                 <article className="article-page">
                     <Breadcrumb
                         items={[
@@ -149,9 +149,10 @@ export default async function EventPage({ params }: EventPageProps) {
                 <aside className="article-sidebar">
                     <SubscribeSidebar />
                 </aside>
-            </div>
+                </div>
 
-            <Footer />
-        </div>
+                <Footer />
+            </div>
+        </>
     );
 }

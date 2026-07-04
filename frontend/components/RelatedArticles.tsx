@@ -1,9 +1,7 @@
 'use client';
 
-import Image from 'next/image';
 import { useTranslations } from 'next-intl';
-import { getCategoryClass } from '@/lib/category-style';
-import SensitiveLink from '@/components/SensitiveLink';
+import ArticleCard from '@/components/ArticleCard';
 
 interface RelatedArticle {
     id: string;
@@ -27,42 +25,16 @@ export default function RelatedArticles({ articles }: RelatedArticlesProps) {
             <p className="section-label">{t('related')}</p>
             <div className="related-cards">
                 {articles.map(article => (
-                    <SensitiveLink
+                    <ArticleCard
                         key={article.id}
                         href={article.href}
-                        className="related-card"
                         sensitive={article.sensitive}
-                    >
-                        <div className="related-thumb">
-                            {article.thumbnailUrl ? (
-                                <Image
-                                    src={article.thumbnailUrl}
-                                    alt={article.title}
-                                    fill
-                                    sizes="52px"
-                                    style={{
-                                        objectFit: 'cover',
-                                        borderRadius: 'inherit',
-                                    }}
-                                />
-                            ) : (
-                                '📰'
-                            )}
-                        </div>
-                        <div>
-                            <p className="related-title">{article.title}</p>
-                            <p className="related-date">
-                                {article.category && (
-                                    <span
-                                        className={`badge badge-sm ${getCategoryClass(article.category)}`}
-                                    >
-                                        {article.category}
-                                    </span>
-                                )}{' '}
-                                {article.date}
-                            </p>
-                        </div>
-                    </SensitiveLink>
+                        thumbnailUrl={article.thumbnailUrl}
+                        title={article.title}
+                        category={article.category}
+                        date={article.date}
+                        compact
+                    />
                 ))}
             </div>
         </div>

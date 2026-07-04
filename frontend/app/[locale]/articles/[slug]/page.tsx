@@ -112,10 +112,10 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         });
 
     return (
-        <div className="portal">
+        <>
             <Header />
-
-            <div className="article-layout">
+            <div className="portal portal-wide">
+                <div className="article-layout">
                 <article className="article-page">
                     <Breadcrumb
                         items={[
@@ -172,9 +172,10 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                     )}
                     <SubscribeSidebar />
                 </aside>
-            </div>
+                </div>
 
-            <Footer />
-        </div>
+                <Footer />
+            </div>
+        </>
     );
 }

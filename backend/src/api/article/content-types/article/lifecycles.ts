@@ -1,14 +1,10 @@
-import crypto from 'crypto';
-
-function generateId(): string {
-  return crypto.randomBytes(6).toString('base64url');
-}
+import { generateSlug } from '../../../../utils/slug';
 
 export default {
   beforeCreate(event: any) {
     const { data } = event.params;
     if (!data.slug) {
-      data.slug = generateId();
+      data.slug = generateSlug();
     }
     if (!data.originalPublishedAt) {
       data.originalPublishedAt = new Date().toISOString();
@@ -17,7 +13,7 @@ export default {
   beforeUpdate(event: any) {
     const { data } = event.params;
     if (data.slug === '' || data.slug === null) {
-      data.slug = generateId();
+      data.slug = generateSlug();
     }
   },
 };
