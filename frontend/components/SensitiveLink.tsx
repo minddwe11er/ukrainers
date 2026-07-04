@@ -55,7 +55,12 @@ export default function SensitiveLink({ href, sensitive, className, children }: 
     return (
         <>
             <Link href={href} className={`${className ?? ''} ${loading ? 'link-loading' : ''}`} onClick={handleClick}>
-                {loading ? <span className="link-spinner"><span className="spinner spinner-sm" /></span> : children}
+                {children}
+                {loading && (
+                    <span className="link-spinner-overlay">
+                        <span className="spinner spinner-sm" />
+                    </span>
+                )}
             </Link>
             {showModal && createPortal(
                 <div className="sensitive-overlay" onClick={() => setShowModal(false)}>

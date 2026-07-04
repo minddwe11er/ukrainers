@@ -6,7 +6,6 @@ import '../globals.css';
 import { routing } from '../../i18n/routing';
 import { notFound } from 'next/navigation';
 import Script from 'next/script';
-import ScrollToTop from '@/components/ScrollToTop';
 
 export const metadata: Metadata = {
     title: 'разом / wir zusammen — новини й Швейцарія',
@@ -57,7 +56,6 @@ export default async function LocaleLayout({
             <body>
                 <NextIntlClientProvider messages={messages}>
                     {children}
-                    <ScrollToTop />
                 </NextIntlClientProvider>
             </body>
         </html>
