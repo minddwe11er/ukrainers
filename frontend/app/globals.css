@@ -1256,6 +1256,21 @@ a.event-loc:hover {
     object-fit: cover;
 }
 
+.article-text a {
+    color: var(--color-accent);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.article-text a:hover {
+    color: var(--color-accent-text);
+}
+
+.article-text h2,
+.article-text h3 {
+    scroll-margin-top: calc(64px + 1rem);
+}
+
 .article-text h3 {
     font-family: var(--font-display);
     font-size: 18px;
@@ -2324,6 +2339,11 @@ a.event-loc:hover {
         z-index: 50;
         margin-left: 1.25rem;
         margin-right: 1.25rem;
+    }
+
+    .article-text h2,
+    .article-text h3 {
+        scroll-margin-top: calc(64px + 8px + 1rem);
     }
 
     .hero {

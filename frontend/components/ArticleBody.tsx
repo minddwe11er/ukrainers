@@ -19,10 +19,7 @@ export default function ArticleBody({ content }: ArticleBodyProps) {
             headingIndex++;
             return <h2 id={`heading-${headingIndex}`}>{children}</h2>;
           },
-          h3: ({ children }) => {
-            headingIndex++;
-            return <h3 id={`heading-${headingIndex}`}>{children}</h3>;
-          },
+          h3: ({ children }) => <h3>{children}</h3>,
           blockquote: ({ children }) => (
             <blockquote className="pullquote">{children}</blockquote>
           ),
