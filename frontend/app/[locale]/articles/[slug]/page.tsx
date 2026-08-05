@@ -43,7 +43,7 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
 }
 
 function extractHeadings(markdown: string): { id: string; label: string }[] {
-    const headingRegex = /^#{2,3}\s+(.+)$/gm;
+    const headingRegex = /^##\s+(.+)$/gm;
     const headings: { id: string; label: string }[] = [];
     let match;
     let index = 0;
