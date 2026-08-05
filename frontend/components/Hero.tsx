@@ -33,6 +33,7 @@ export default function Hero({ article }: HeroProps) {
               src={article.coverUrl}
               alt={article.title}
               fill
+              priority
               sizes="(max-width: 768px) 100vw, 60vw"
               style={{ objectFit: 'cover', borderRadius: 'inherit' }}
             />

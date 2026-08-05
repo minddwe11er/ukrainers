@@ -52,6 +52,34 @@ export default async function LocaleLayout({
                     data-website-id="21107f0c-78ee-4f68-bc39-aa971b1db1ca"
                     strategy="afterInteractive"
                 />
+                <Script id="google-translate-fix" strategy="beforeInteractive">
+                    {`
+                    (function () {
+                        var isDev = ${process.env.NODE_ENV !== 'production'};
+                        var log = function (message, a, b) {
+                            if (isDev) console.error(message, a, b);
+                        };
+
+                        var originalRemoveChild = Node.prototype.removeChild;
+                        Node.prototype.removeChild = function (child) {
+                            if (child.parentNode !== this) {
+                                log('Blocked removeChild on a node that is no longer a child (likely Google Translate)', child, this);
+                                return child;
+                            }
+                            return originalRemoveChild.apply(this, arguments);
+                        };
+
+                        var originalInsertBefore = Node.prototype.insertBefore;
+                        Node.prototype.insertBefore = function (newNode, referenceNode) {
+                            if (referenceNode && referenceNode.parentNode !== this) {
+                                log('Blocked insertBefore with a reference node that is no longer a child (likely Google Translate)', referenceNode, this);
+                                return newNode;
+                            }
+                            return originalInsertBefore.apply(this, arguments);
+                        };
+                    })();
+                    `}
+                </Script>
             </head>
             <body>
                 <NextIntlClientProvider messages={messages}>
