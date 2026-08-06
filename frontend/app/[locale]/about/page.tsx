@@ -1,12 +1,24 @@
+import type { Metadata } from 'next';
 import Image from 'next/image';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ArticleBody from '@/components/ArticleBody';
 import { getTranslations } from 'next-intl/server';
 import { getAuthors, getPageBySlug, getStrapiImageUrl, getEventCount, getAuthorCount } from '@/lib/strapi';
+import { buildAlternates } from '@/lib/seo';
 
 interface AboutPageProps {
     params: Promise<{ locale: string }>;
+}
+
+export async function generateMetadata({ params }: AboutPageProps): Promise<Metadata> {
+    const { locale } = await params;
+    const t = await getTranslations('about');
+
+    return {
+        title: t('title'),
+        alternates: buildAlternates(locale, '/about'),
+    };
 }
 
 export default async function AboutPage({ params }: AboutPageProps) {

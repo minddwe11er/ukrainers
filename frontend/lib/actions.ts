@@ -7,7 +7,7 @@ import { formatDate, estimateReadingTime } from '@/lib/format';
 export interface NewsCardArticle {
     slug: string;
     title: string;
-    category: string | null;
+    categories: string[];
     date: string;
     readingTime: number;
     thumbnailUrl: string | null;
@@ -33,7 +33,7 @@ export async function loadMoreNewsCards(
         return {
             slug: la.slug,
             title: la.title,
-            category: la.categories[0]?.name ?? null,
+            categories: la.categories.map(c => c.name),
             date: (la.originalPublishedAt ?? la.publishedAt)
                 ? formatDate((la.originalPublishedAt ?? la.publishedAt)!, locale)
                 : '',

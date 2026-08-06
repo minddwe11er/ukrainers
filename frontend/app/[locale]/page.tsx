@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import Header from '@/components/Header';
 import Hero from '@/components/Hero';
 import FeedGrid from '@/components/FeedGrid';
@@ -12,10 +13,16 @@ import { localizeArticle, localizeCategory } from '@/lib/localize';
 import { formatDate, estimateReadingTime } from '@/lib/format';
 import { getExcludedSlugs } from '@/lib/excluded-categories';
 import { getTranslations } from 'next-intl/server';
+import { buildAlternates } from '@/lib/seo';
 
 interface HomeProps {
     params: Promise<{ locale: string }>;
     searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}
+
+export async function generateMetadata({ params }: HomeProps): Promise<Metadata> {
+    const { locale } = await params;
+    return { alternates: buildAlternates(locale, '') };
 }
 
 export default async function Home({ params, searchParams }: HomeProps) {
@@ -74,7 +81,7 @@ export default async function Home({ params, searchParams }: HomeProps) {
                 slug: la.slug,
                 title: la.title,
                 description: la.descr || null,
-                category: la.categories[0]?.name ?? null,
+                categories: la.categories.map(c => c.name),
                 date: (la.originalPublishedAt ?? la.publishedAt) ? formatDate((la.originalPublishedAt ?? la.publishedAt)!, locale) : '',
                 readingTime: estimateReadingTime(la.body),
                 thumbnailUrl: getStrapiImageUrl(la.coverImage),

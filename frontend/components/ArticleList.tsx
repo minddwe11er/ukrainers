@@ -8,7 +8,7 @@ interface ArticleItem {
   slug: string;
   title: string;
   description: string | null;
-  category: string | null;
+  categories: string[];
   date: string;
   readingTime: number;
   thumbnailUrl: string | null;
@@ -63,7 +63,7 @@ export default function ArticleList({ articles, showLabel = true, filterSlot }: 
             thumbnailUrl={article.thumbnailUrl}
             title={article.title}
             description={article.description}
-            category={article.category}
+            categories={article.categories}
             date={article.date}
             readingTime={article.readingTime}
           />

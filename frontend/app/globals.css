@@ -1124,7 +1124,7 @@ a.event-loc:hover {
 
 .article-layout {
     display: grid;
-    grid-template-columns: minmax(0, 700px) 240px;
+    grid-template-columns: minmax(0, 680px) 240px;
     justify-content: center;
     gap: 1.5rem;
     align-items: start;
@@ -1155,6 +1155,13 @@ a.event-loc:hover {
     display: flex;
     gap: 6px;
     flex-wrap: wrap;
+}
+
+.badges-inline {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    vertical-align: middle;
 }
 
 .article-page-title {
@@ -2166,7 +2173,7 @@ a.event-loc:hover {
         justify-content: center;
     }
 
-    .feed-lead .badge {
+    .feed-lead .badges {
         align-self: flex-start;
     }
 
