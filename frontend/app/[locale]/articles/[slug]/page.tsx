@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation';
 import Breadcrumb from '@/components/Breadcrumb';
 import Header from '@/components/Header';
 import ArticleHeader from '@/components/ArticleHeader';
+import ArticleHero from '@/components/ArticleHero';
 import ArticleBody from '@/components/ArticleBody';
 import ShareButtons from '@/components/ShareButtons';
 import RelatedArticles from '@/components/RelatedArticles';
@@ -15,6 +16,7 @@ import { getTranslations } from 'next-intl/server';
 import { getArticleBySlug, getArticles, getStrapiImageUrl } from '@/lib/strapi';
 import { localizeArticle } from '@/lib/localize';
 import { formatDateFull as formatDate, estimateReadingTime } from '@/lib/format';
+import { buildAlternates, SITE_URL } from '@/lib/seo';
 
 interface ArticlePageProps {
     params: Promise<{
@@ -34,6 +36,7 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
     return {
         title,
         description: descr ?? undefined,
+        alternates: buildAlternates(locale, `/articles/${slug}`, !!article.body_de),
         openGraph: {
             title,
             description: descr ?? undefined,
@@ -73,12 +76,11 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         redirect('/de');
     }
 
-    const { title, body, categories, authors } = localizeArticle(article, locale);
+    const { title, descr, body, categories, authors } = localizeArticle(article, locale);
     const categoryNames = categories.map(c => c.name).slice(-3);
 
-    const publishedAt = (article.originalPublishedAt ?? article.publishedAt)
-        ? formatDate((article.originalPublishedAt ?? article.publishedAt)!, locale)
-        : '';
+    const rawPublishedAt = article.originalPublishedAt ?? article.publishedAt;
+    const publishedAt = rawPublishedAt ? formatDate(rawPublishedAt, locale) : '';
 
     const readingTime = estimateReadingTime(body);
     const tableOfContents = extractHeadings(body);
@@ -104,53 +106,95 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                 id: String(la.id),
                 title: la.title,
                 date: (la.originalPublishedAt ?? la.publishedAt) ? formatDate((la.originalPublishedAt ?? la.publishedAt)!, locale) : '',
-                category: la.categories[0]?.name ?? null,
+                categories: la.categories.map(c => c.name),
                 thumbnailUrl: getStrapiImageUrl(la.coverImage),
                 href: `/${locale}/articles/${la.slug}`,
                 sensitive: a.sensitive ?? false,
             };
         });
 
+    const breadcrumbItems = [
+        { label: tNews('title'), href: `/${locale}/articles` },
+        ...(categoryNames.length > 0 ? [{ label: categoryNames[0] }] : []),
+    ];
+
+    const jsonLd = {
+        '@context': 'https://schema.org',
+        '@type': 'NewsArticle',
+        headline: title,
+        description: descr ?? undefined,
+        image: coverUrl ? [coverUrl] : undefined,
+        datePublished: rawPublishedAt ?? undefined,
+        dateModified: article.updatedAt,
+        author: authors.map(a => ({ '@type': 'Person', name: a.name })),
+        publisher: {
+            '@type': 'Organization',
+            name: 'разом / wir zusammen',
+            url: SITE_URL,
+        },
+        mainEntityOfPage: {
+            '@type': 'WebPage',
+            '@id': `${SITE_URL}/${locale}/articles/${slug}`,
+        },
+    };
+
     return (
         <>
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+            />
             <Header />
+            {article.hero && (
+                <ArticleHero
+                    title={title}
+                    descr={descr}
+                    categories={categoryNames}
+                    authors={authors.map(a => ({
+                        name: a.name,
+                        avatarUrl: getStrapiImageUrl(a.avatar),
+                        initials: a.initials,
+                    }))}
+                    publishedAt={publishedAt}
+                    readingTime={readingTime}
+                    coverUrl={coverUrl}
+                    breadcrumbItems={breadcrumbItems}
+                />
+            )}
             <div className="portal portal-wide">
                 <div className="article-layout">
                 <article className="article-page">
-                    <Breadcrumb
-                        items={[
-                            { label: tNews('title'), href: `/${locale}/articles` },
-                            ...(categoryNames.length > 0
-                                ? [{ label: categoryNames[0] }]
-                                : []),
-                        ]}
-                    />
+                    {!article.hero && (
+                        <>
+                            <Breadcrumb items={breadcrumbItems} />
 
-                    <ArticleHeader
-                        title={title}
-                        categories={categoryNames}
-                        authors={authors.map(a => ({
-                            name: a.name,
-                            role: a.role,
-                            avatarUrl: getStrapiImageUrl(a.avatar),
-                            initials: a.initials,
-                        }))}
-                        publishedAt={publishedAt}
-                        readingTime={readingTime}
-                    />
-
-                    {coverUrl && (
-                        <div className="article-cover">
-                            <Image
-                                src={coverUrl}
-                                alt={
-                                    article.coverImage?.alternativeText || title
-                                }
-                                fill
-                                sizes="(max-width: 768px) 100vw, 720px"
-                                style={{ objectFit: 'cover' }}
+                            <ArticleHeader
+                                title={title}
+                                categories={categoryNames}
+                                authors={authors.map(a => ({
+                                    name: a.name,
+                                    role: a.role,
+                                    avatarUrl: getStrapiImageUrl(a.avatar),
+                                    initials: a.initials,
+                                }))}
+                                publishedAt={publishedAt}
+                                readingTime={readingTime}
                             />
-                        </div>
+
+                            {coverUrl && (
+                                <div className="article-cover">
+                                    <Image
+                                        src={coverUrl}
+                                        alt={
+                                            article.coverImage?.alternativeText || title
+                                        }
+                                        fill
+                                        sizes="(max-width: 768px) 100vw, 720px"
+                                        style={{ objectFit: 'cover' }}
+                                    />
+                                </div>
+                            )}
+                        </>
                     )}
 
                     <ArticleBody content={body} />
