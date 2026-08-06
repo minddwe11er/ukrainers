@@ -10,7 +10,7 @@ interface ArticleCardProps {
     sensitive?: boolean;
     thumbnailUrl: string | null;
     title: string;
-    category: string | null;
+    categories: string[];
     date: string;
     description?: string | null;
     readingTime?: number;
@@ -22,7 +22,7 @@ export default function ArticleCard({
     sensitive,
     thumbnailUrl,
     title,
-    category,
+    categories,
     date,
     description,
     readingTime,
@@ -49,8 +49,12 @@ export default function ArticleCard({
                 <div>
                     <p className="related-title">{title}</p>
                     <p className="related-date">
-                        {category && (
-                            <span className={`badge badge-sm ${getCategoryClass(category)}`}>{category}</span>
+                        {categories.length > 0 && (
+                            <span className="badges-inline">
+                                {categories.map((cat, i) => (
+                                    <span key={i} className={`badge badge-sm ${getCategoryClass(cat)}`}>{cat}</span>
+                                ))}
+                            </span>
                         )}{' '}
                         {date}
                     </p>
@@ -80,9 +84,9 @@ export default function ArticleCard({
                     <p className="article-description">{description}</p>
                 )}
                 <p className="article-meta">
-                    {category && (
-                        <span className={`badge badge-sm ${getCategoryClass(category)}`}>{category}</span>
-                    )}
+                    {categories.map((cat, i) => (
+                        <span key={i} className={`badge badge-sm ${getCategoryClass(cat)}`}>{cat}</span>
+                    ))}
                     {date} · {readingTime} {t('readTime')}
                 </p>
             </div>

@@ -185,6 +185,28 @@ export async function getArticles(
   return data ?? [];
 }
 
+export async function getAllArticles(): Promise<StrapiArticle[]> {
+  const pageSize = 100;
+  const articles: StrapiArticle[] = [];
+  let page = 1;
+  let pageCount = 1;
+
+  do {
+    const response = await fetchStrapi<StrapiArticle[]>('/articles', {
+      'sort': 'originalPublishedAt:desc',
+      'pagination[page]': String(page),
+      'pagination[pageSize]': String(pageSize),
+      'status': 'published',
+      'filters[originalPublishedAt][$lte]': new Date().toISOString(),
+    });
+    articles.push(...(response.data ?? []));
+    pageCount = response.meta?.pagination?.pageCount ?? 1;
+    page++;
+  } while (page <= pageCount);
+
+  return articles;
+}
+
 export async function getArticlesOffset(
   offset: number,
   limit: number,
@@ -257,6 +279,7 @@ export interface StrapiPage {
   slug: string;
   body: string | null;
   body_de: string | null;
+  updatedAt: string;
 }
 
 export async function getPageBySlug(slug: string): Promise<StrapiPage | null> {
@@ -266,6 +289,15 @@ export async function getPageBySlug(slug: string): Promise<StrapiPage | null> {
   });
 
   return data?.[0] ?? null;
+}
+
+export async function getPages(): Promise<StrapiPage[]> {
+  const { data } = await fetchStrapi<StrapiPage[]>('/pages', {
+    'status': 'published',
+    'pagination[pageSize]': '100',
+  });
+
+  return data ?? [];
 }
 
 export async function getAuthors(): Promise<StrapiAuthor[]> {

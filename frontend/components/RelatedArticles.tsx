@@ -7,7 +7,7 @@ interface RelatedArticle {
     id: string;
     title: string;
     date: string;
-    category: string | null;
+    categories: string[];
     thumbnailUrl: string | null;
     href: string;
     sensitive?: boolean;
@@ -31,7 +31,7 @@ export default function RelatedArticles({ articles }: RelatedArticlesProps) {
                         sensitive={article.sensitive}
                         thumbnailUrl={article.thumbnailUrl}
                         title={article.title}
-                        category={article.category}
+                        categories={article.categories}
                         date={article.date}
                         compact
                     />

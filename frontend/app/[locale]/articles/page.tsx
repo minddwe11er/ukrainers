@@ -14,18 +14,21 @@ import {
 import { localizeArticle, localizeCategory } from '@/lib/localize';
 import { getTranslations } from 'next-intl/server';
 import { formatDate, estimateReadingTime } from '@/lib/format';
+import { buildAlternates } from '@/lib/seo';
 
 interface ArticlesPageProps {
     params: Promise<{ locale: string }>;
     searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
-export async function generateMetadata(): Promise<Metadata> {
+export async function generateMetadata({ params }: ArticlesPageProps): Promise<Metadata> {
+    const { locale } = await params;
     const t = await getTranslations('newsPage');
     const title = t('title');
 
     return {
         title,
+        alternates: buildAlternates(locale, '/articles'),
         openGraph: { title },
     };
 }
@@ -65,7 +68,7 @@ export default async function ArticlesPage({
             slug: la.slug,
             title: la.title,
             description: la.descr || null,
-            category: la.categories[0]?.name ?? null,
+            categories: la.categories.map(c => c.name),
             date:
                 (la.originalPublishedAt ?? la.publishedAt)
                     ? formatDate(

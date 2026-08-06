@@ -13,6 +13,7 @@ import { getTranslations } from 'next-intl/server';
 import { getEventBySlug, getStrapiImageUrl } from '@/lib/strapi';
 import { localizeEvent } from '@/lib/localize';
 import { formatDateFull as formatDate, formatEventDateTime, estimateReadingTime } from '@/lib/format';
+import { buildAlternates } from '@/lib/seo';
 
 interface EventPageProps {
     params: Promise<{
@@ -33,6 +34,7 @@ export async function generateMetadata({ params }: EventPageProps): Promise<Meta
     return {
         title,
         description,
+        alternates: buildAlternates(locale, `/events/${slug}`, !!event.body_de),
         openGraph: {
             title,
             description,

@@ -66,8 +66,12 @@ export default function NewsCards({
                             ) : '📰'}
                         </div>
                         <div className="news-card-body">
-                            {article.category && (
-                                <span className={`badge badge-sm ${getCategoryClass(article.category)}`}>{article.category}</span>
+                            {article.categories.length > 0 && (
+                                <div className="badges">
+                                    {article.categories.map((cat, i) => (
+                                        <span key={i} className={`badge badge-sm ${getCategoryClass(cat)}`}>{cat}</span>
+                                    ))}
+                                </div>
                             )}
                             <h4 className="feed-title">{article.title}</h4>
                             <p className="feed-meta">{article.date} · {article.readingTime} {t('article.readTime')}</p>

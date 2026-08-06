@@ -7,7 +7,7 @@ interface FeedArticle {
     slug: string;
     title: string;
     description: string | null;
-    category: string | null;
+    categories: string[];
     date: string;
     readingTime: number;
     thumbnailUrl: string | null;
@@ -51,8 +51,12 @@ export default async function FeedGrid({ lead, stack, eventsSlot }: FeedGridProp
                             />
                         ) : '📰'}
                     </div>
-                    {lead.category && (
-                        <span className={`badge badge-sm ${getCategoryClass(lead.category)}`}>{lead.category}</span>
+                    {lead.categories.length > 0 && (
+                        <div className="badges">
+                            {lead.categories.map((cat, i) => (
+                                <span key={i} className={`badge badge-sm ${getCategoryClass(cat)}`}>{cat}</span>
+                            ))}
+                        </div>
                     )}
                     <h3 className="feed-title feed-title-lg">{lead.title}</h3>
                     {lead.description && <p className="feed-excerpt">{lead.description}</p>}
@@ -67,8 +71,12 @@ export default async function FeedGrid({ lead, stack, eventsSlot }: FeedGridProp
                             className="feed-item"
                             sensitive={article.sensitive}
                         >
-                            {article.category && (
-                                <span className={`badge badge-sm ${getCategoryClass(article.category)}`}>{article.category}</span>
+                            {article.categories.length > 0 && (
+                                <div className="badges">
+                                    {article.categories.map((cat, i) => (
+                                        <span key={i} className={`badge badge-sm ${getCategoryClass(cat)}`}>{cat}</span>
+                                    ))}
+                                </div>
                             )}
                             <h3 className="feed-title">{article.title}</h3>
                             <p className="feed-meta">{article.date} · {article.readingTime} {tArticle('readTime')}</p>

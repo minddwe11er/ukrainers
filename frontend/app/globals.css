@@ -1124,7 +1124,7 @@ a.event-loc:hover {
 
 .article-layout {
     display: grid;
-    grid-template-columns: minmax(0, 700px) 240px;
+    grid-template-columns: minmax(0, 680px) 240px;
     justify-content: center;
     gap: 1.5rem;
     align-items: start;
@@ -1155,6 +1155,13 @@ a.event-loc:hover {
     display: flex;
     gap: 6px;
     flex-wrap: wrap;
+}
+
+.badges-inline {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    vertical-align: middle;
 }
 
 .article-page-title {
@@ -1235,6 +1242,143 @@ a.event-loc:hover {
     flex-direction: column;
     position: relative;
     gap: 8px;
+}
+
+/* --- Article hero (full-bleed photo header for "Для головної" articles) --- */
+.article-hero {
+    position: relative;
+    height: 60vh;
+    min-height: 400px;
+    max-height: 560px;
+    overflow: hidden;
+    background: linear-gradient(160deg, #3a4a5c, #1f2933);
+    color: #fff;
+    margin-bottom: 1.5rem;
+}
+
+.article-hero__scrim {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0.35) 55%, rgba(10, 11, 13, 0.92) 100%);
+    pointer-events: none;
+}
+
+.article-hero__crumbs,
+.article-hero__content {
+    position: absolute;
+    left: 0;
+    right: 0;
+    max-width: 940px;
+    margin: 0 auto;
+    padding: 0 1.25rem;
+}
+
+.article-hero__crumbs {
+    top: 24px;
+}
+
+.article-hero__content {
+    bottom: 0;
+    padding-bottom: 2rem;
+}
+
+.article-hero .breadcrumb {
+    color: rgba(255, 255, 255, 0.6);
+}
+.article-hero .breadcrumb a {
+    color: rgba(255, 255, 255, 0.85);
+}
+.article-hero .breadcrumb a:hover {
+    color: #fff;
+}
+
+.article-hero .badges {
+    margin-bottom: 1rem;
+}
+
+/* the hero sits on a photo, not the page background, so its badges stay
+   on the dark chip palette regardless of the site's light/dark theme */
+.article-hero .badge-important { background: #3d1520; color: #f48fb1; }
+.article-hero .badge-events { background: #3d2a10; color: #ffb74d; }
+.article-hero .badge-official { background: #0d2e2a; color: #4db6ac; }
+.article-hero .badge-education { background: #102840; color: #64b5f6; }
+
+.article-hero__title {
+    font-family: var(--font-display);
+    font-size: 40px;
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: -0.015em;
+    color: #fff;
+    margin: 0 0 14px;
+}
+
+.article-hero__desc {
+    font-size: 17px;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.82);
+    margin: 0 0 18px;
+}
+
+.article-hero__meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    font-size: 13px;
+}
+
+.article-hero__avatars {
+    display: flex;
+}
+
+.article-hero__avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid rgba(20, 20, 19, 0.6);
+    background: rgba(255, 255, 255, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.article-hero__avatar + .article-hero__avatar {
+    margin-left: -8px;
+}
+
+.article-hero__authors {
+    color: #fff;
+    font-weight: 500;
+}
+
+.article-hero__date {
+    color: rgba(255, 255, 255, 0.55);
+}
+
+@media (min-width: 1000px) {
+    .article-hero__crumbs,
+    .article-hero__content {
+        max-width: 1280px;
+    }
+}
+
+@media (max-width: 700px) {
+    .article-hero {
+        height: 46vh;
+        min-height: 320px;
+    }
+    .article-hero__title {
+        font-size: 26px;
+    }
+    .article-hero__desc {
+        font-size: 15px;
+    }
 }
 
 .article-text {
@@ -1348,6 +1492,49 @@ a.event-loc:hover {
     color: var(--color-text);
 }
 
+/* --- Tooltip (generic, anchor any element with .tooltip-anchor + conditionally rendered .tooltip) --- */
+.tooltip-anchor {
+    position: relative;
+    display: inline-flex;
+}
+
+.tooltip {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--color-text);
+    color: var(--color-surface);
+    font-size: 11.5px;
+    font-weight: 500;
+    white-space: nowrap;
+    padding: 4px 9px;
+    border-radius: var(--radius-sm);
+    pointer-events: none;
+    animation: tooltip-pop 0.15s ease-out;
+}
+
+.tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 4px solid transparent;
+    border-top-color: var(--color-text);
+}
+
+@keyframes tooltip-pop {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(2px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
 .related-cards {
     display: flex;
     flex-direction: column;
@@ -1432,6 +1619,24 @@ a.event-loc:hover {
     display: flex;
     flex-direction: column;
     gap: 2px;
+    max-height: 45vh;
+    overflow-y: auto;
+    padding-right: 4px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-border) transparent;
+}
+
+.toc::-webkit-scrollbar {
+    width: 6px;
+}
+
+.toc::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.toc::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border-radius: var(--radius-sm);
 }
 
 .toc-item {
@@ -2105,7 +2310,7 @@ a.event-loc:hover {
         justify-content: center;
     }
 
-    .feed-lead .badge {
+    .feed-lead .badges {
         align-self: flex-start;
     }
 

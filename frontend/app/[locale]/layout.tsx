@@ -6,8 +6,10 @@ import '../globals.css';
 import { routing } from '../../i18n/routing';
 import { notFound } from 'next/navigation';
 import Script from 'next/script';
+import { SITE_URL } from '../../lib/seo';
 
 export const metadata: Metadata = {
+    metadataBase: new URL(SITE_URL),
     title: 'разом / wir zusammen — новини й Швейцарія',
     description:
         'Новини й інформація для української спільноти в районі Санкт-Галлена, Швейцарія',
